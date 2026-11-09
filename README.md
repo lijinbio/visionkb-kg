@@ -32,6 +32,12 @@ and predicates (bmt on the vendored 4.4.6), domain/range of every category-predi
 links, and the KGX validator (streaming). A self-test checks that the design proposal's wrong id for APLN (`HGNC:16693`; APLN is
 `HGNC:16665`) is flagged.
 
+Known issues (report only; nothing is flagged or removed) are computed from the release summaries and written to
+`validation/known_issues.json`, a "Known issues" section of `report.md` and the manifest `known_issues` list. KI-1
+(`src/visionkb_kg/known_issues.py`): per atlas, the top-50 markers of each majorclass are looked up in every cell-type group of
+another majorclass; a group is listed when the median ratio of its marker pseudobulk to the majorclass level is >= 0.10 and >= 5x
+that of its sibling cell types, with the number of D18 expressed_in study results it contributes for those markers.
+
 ## Install and run
 
 ```bash

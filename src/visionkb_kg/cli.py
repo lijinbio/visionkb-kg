@@ -225,6 +225,8 @@ def build(release: str, src: Sources, *, run_kgx: bool = True) -> Path:
     merged = pa.concat_tables(tables, promote_options="permissive")
     pq.write_table(merged, stage / "summaries" / "expr_summary.parquet", compression="zstd")
     del tables
+    log("known issues")
+    ki_entries = known_issues_step(stage, regs, rep)
     from .ingest.datasets import registry_line
 
     (stage / "registry").mkdir()
@@ -317,6 +319,7 @@ def build(release: str, src: Sources, *, run_kgx: bool = True) -> Path:
             "donor_support_checked": rep["ingest"]["heca"]["edge_rule"]["donor_support_checked"],
             "robustness_specificity_fraction": rep["ingest"]["heca"]["edge_rule"]["robustness"],
         },
+        "known_issues": ki_entries,
         "neo4j_import": {
             "dir": "neo4j-import",
             "args_file": "neo4j-import/import.args",
@@ -331,6 +334,42 @@ def build(release: str, src: Sources, *, run_kgx: bool = True) -> Path:
     shutil.move(str(stage), str(final))
     log(f"release written: {final}")
     return final
+
+
+def known_issues_step(stage: Path, regs: list[dict], rep: dict) -> list[dict]:
+    """Compute the known issues (report only) from the release summaries; write validation/known_issues.json, append the
+    'Known issues' section to validation/report.md, store a summary in report.json and return the manifest entries."""
+    import pandas as pd
+
+    from . import known_issues as KI
+
+    groups = pd.concat(
+        [pd.read_parquet(Path(r["_dir"]) / "summaries" / "groups.parquet") for r in regs], ignore_index=True
+    )
+    donor_ok = rep["ingest"]["heca"]["edge_rule"]["donor_support_checked"]
+    ki = KI.cross_lineage(stage / "summaries" / "expr_summary.parquet", groups, donor_ok)
+    wjson(ki, stage / "validation" / "known_issues.json")
+    md = stage / "validation" / "report.md"
+    md.write_text(md.read_text().split("\n## Known issues\n")[0].rstrip("\n") + "\n" + KI.markdown(ki))
+    rp = stage / "validation" / "report.json"
+    r = json.loads(rp.read_text())
+    r["known_issues"] = {k: ki[k] for k in ("id", "title", "n_pairs", "n_groups", "n_study_results")}
+    wjson(r, rp)
+    rod = [p for p in ki["pairs"] if p["program_of"] == "Rod"]
+    return [
+        {
+            "id": ki["id"],
+            "title": ki["title"],
+            "status": "open; report only, no edges flagged or removed (decision D19); contamination QC planned",
+            "section": "validation/report.md#known-issues",
+            "details": "validation/known_issues.json",
+            "n_pairs": ki["n_pairs"],
+            "n_groups": ki["n_groups"],
+            "n_study_results": ki["n_study_results"],
+            "rod_program_groups": sorted({f"{p['dataset_id']}|{p['group_label']}" for p in rod}),
+            "rod_program_study_results": int(sum(p["d18_study_results_to_those_markers"] for p in rod)),
+        }
+    ]
 
 
 def refresh_manifest(release: str) -> dict:
