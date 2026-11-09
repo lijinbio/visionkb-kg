@@ -173,7 +173,7 @@ def build(release: str, src: Sources, *, run_kgx: bool = True) -> Path:
 
     from .biolink import biolink_sha256, toolkit
     from .neo4j_csv import write_import
-    from .release import file_list, merge, sha256_file
+    from .release import file_list, merge, release_counts, sha256_file
     from .validate import apln_self_test, validate_release
 
     final = release_dir(release)
@@ -215,7 +215,9 @@ def build(release: str, src: Sources, *, run_kgx: bool = True) -> Path:
         tables.append(pq.read_table(f))
         atl.append({"dataset_id": r["id"], "atlas_version": r["version"], "summary_sha256": sha256_file(f)})
     (stage / "summaries").mkdir()
-    pq.write_table(pa.concat_tables(tables), stage / "summaries" / "expr_summary.parquet", compression="zstd")
+    # atlases without a region column store `region` as an all-null column: promote null -> string
+    merged = pa.concat_tables(tables, promote_options="permissive")
+    pq.write_table(merged, stage / "summaries" / "expr_summary.parquet", compression="zstd")
     del tables
     from .ingest.datasets import registry_line
 
@@ -287,7 +289,6 @@ def build(release: str, src: Sources, *, run_kgx: bool = True) -> Path:
             "infores": INFORES["heca"],
         }
     )
-    n_sr = rep["nodes_by_category"].get("biolink:StudyResult", 0)
     manifest = {
         "kg_release": release,
         "created_utc": datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -303,14 +304,7 @@ def build(release: str, src: Sources, *, run_kgx: bool = True) -> Path:
         },
         "sources": srcs,
         "atlases": atl,
-        "counts": {
-            "nodes_by_category": rep["nodes_by_category"],
-            "edges_by_predicate": rep["edges_by_predicate"],
-            "study_results": n_sr,
-            "nodes": mstats["nodes"],
-            "edges": mstats["edges"],
-            "neo4j": neo["counts"],
-        },
+        "counts": {**release_counts(stage), "neo4j": neo["counts"]},
         "validation": {"status": rep["status"], "n_errors": rep["n_errors"], "n_warnings": rep["n_warnings"]},
         "neo4j_import": {
             "dir": "neo4j-import",
@@ -326,6 +320,20 @@ def build(release: str, src: Sources, *, run_kgx: bool = True) -> Path:
     shutil.move(str(stage), str(final))
     log(f"release written: {final}")
     return final
+
+
+def refresh_manifest(release: str) -> dict:
+    """Recompute manifest counts (contracts v0.7) and the file list of an unpacked, not yet bundled release."""
+    from .release import file_list, release_counts
+
+    root = release_dir(release)
+    if (data_root() / "kg" / "bundles" / f"{release}.tar").exists():
+        raise SystemExit(f"{release} is already bundled; releases are immutable after pack")
+    m = json.loads((root / "manifest.json").read_text())
+    m["counts"] = {**release_counts(root), "neo4j": m.get("counts", {}).get("neo4j")}
+    m["files"] = file_list(root)
+    wjson(m, root / "manifest.json")
+    return m["counts"]
 
 
 def report_md(rep: dict) -> str:
@@ -392,6 +400,8 @@ def main(argv=None):
     s = sub.add_parser("build")
     s.add_argument("release")
     s.add_argument("--no-kgx", action="store_true", help="skip the KGX validator pass")
+    s = sub.add_parser("refresh-manifest", help="recompute manifest counts and file checksums before pack")
+    s.add_argument("release")
     s = sub.add_parser("pack")
     s.add_argument("release")
     s.add_argument("--out", help="bundle dir (default $VISIONKB_DATA_ROOT/kg/bundles)")
@@ -401,6 +411,11 @@ def main(argv=None):
     s = sub.add_parser("all")
     s.add_argument("release")
     args = p.parse_args(argv)
+    import re
+
+    rel = getattr(args, "release", None)
+    if rel and not re.fullmatch(r"visionkb-\d{4}\.\d{2}\.\d+", rel):
+        raise SystemExit(f"release id must look like visionkb-YYYY.MM.N: {rel}")
     if args.work_dir:
         import os
 
@@ -411,6 +426,9 @@ def main(argv=None):
         res = verify(Path(args.bundle), Path(args.extract_to) if args.extract_to else None)
         print(json.dumps(res, indent=2))
         sys.exit(0 if res["status"] == "pass" else 1)
+    if args.cmd == "refresh-manifest":
+        print(json.dumps({k: v for k, v in refresh_manifest(args.release).items() if k != "neo4j"}, indent=2))
+        return
     if args.cmd == "pack":
         from .release import pack
 

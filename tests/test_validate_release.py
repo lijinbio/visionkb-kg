@@ -73,6 +73,12 @@ def test_neo4j_pack_verify(tmp_path, mini_graph):
     assert "--nodes=./nodes_Gene.csv" in args
     assert all(x.split("=", 1)[1].startswith("./") for x in args.split() if x.startswith(("--nodes", "--rel")))
     assert "entity_search" in (rel / "neo4j-import" / "post_import.cypher").read_text()
+    from visionkb_kg.release import release_counts
+
+    cnt = release_counts(rel)
+    assert cnt["nodes_total"] == len(mini_graph[0]) and sum(cnt["nodes_by_category"].values()) == cnt["nodes_total"]
+    assert cnt["nodes_by_category"]["visionkb:CellState"] == 1 and cnt["edges_by_predicate"]["supporting_data_set"] == 1
+    assert cnt["edges_total"] == len(mini_graph[1]) + 1 and cnt["study_results"] == 1
     (rel / "RELEASE").write_text("visionkb-test.0\n")
     (rel / "manifest.json").write_text(json.dumps({"kg_release": "visionkb-test.0", "files": file_list(rel)}))
     out = pack(rel, tmp_path / "bundles")

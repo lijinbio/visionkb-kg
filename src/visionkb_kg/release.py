@@ -71,6 +71,47 @@ def merge(source_dirs: list[Path], out_dir: Path) -> dict:
     return stats
 
 
+def most_specific(categories: list[str]) -> str:
+    """One category per node: a visionkb class if present (it extends a Biolink class), else the first Biolink category."""
+    vk = [c for c in categories if c.startswith("visionkb:")]
+    return vk[0] if vk else categories[0]
+
+
+def release_counts(root: Path) -> dict:
+    """Manifest counts (contracts v0.7): every node once under its most specific category, every relationship written to
+    neo4j-import once under its predicate (StudyResult -> Dataset links as ``supporting_data_set``); totals are checked
+    against the row counts of the neo4j-import CSVs."""
+    import csv
+
+    by_cat: Counter = Counter()
+    for n in read_jsonl(root / "kgx" / "nodes.jsonl"):
+        by_cat[most_specific(n["category"])] += 1
+    by_pred: Counter = Counter(e["predicate"] for e in read_jsonl(root / "kgx" / "edges.jsonl"))
+    imp = root / "neo4j-import"
+
+    def rows(p: Path) -> int:
+        with open(p, newline="", encoding="utf-8") as f:
+            return sum(1 for _ in csv.reader(f)) - 1
+
+    sds = imp / "rels_supporting_data_set.csv"
+    if sds.exists():
+        by_pred["supporting_data_set"] = rows(sds)
+    csv_nodes = sum(rows(p) for p in sorted(imp.glob("nodes_*.csv")))
+    csv_rels = sum(rows(p) for p in sorted(imp.glob("rels_*.csv")))
+    out = {
+        "nodes_total": sum(by_cat.values()),
+        "edges_total": sum(by_pred.values()),
+        "study_results": by_cat.get("biolink:StudyResult", 0),
+        "nodes_by_category": dict(sorted(by_cat.items())),
+        "edges_by_predicate": dict(sorted(by_pred.items())),
+    }
+    if out["nodes_total"] != csv_nodes or out["edges_total"] != csv_rels:
+        raise RuntimeError(
+            f"KGX counts {out['nodes_total']}/{out['edges_total']} != neo4j-import rows {csv_nodes}/{csv_rels}"
+        )
+    return out
+
+
 def file_list(root: Path, exclude=("manifest.json",)) -> list[dict]:
     out = []
     for p in sorted(root.rglob("*")):
