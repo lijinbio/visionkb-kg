@@ -17,6 +17,8 @@ jobs:
           want=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
           [[ "${GITHUB_REF_NAME#v}" == "$want" ]] || { echo "tag $GITHUB_REF_NAME != version $want"; exit 1; }
       - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.13"
       - run: uv sync --locked
       - run: uv run pytest
       - name: Publish GitHub release
