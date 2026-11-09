@@ -2093,6 +2093,13 @@
             "null"
           ]
         },
+        "donor_support_checked": {
+          "description": "False when the atlas has no usable donor column, so the donor-support rule (n_donors_expressing >= 2) was not applied.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
         "edge_id": {
           "description": "Deterministic id of the edge this study result supports (visionkb:e-<sha1>).",
           "type": "string"
@@ -2118,7 +2125,7 @@
           ]
         },
         "expression_method": {
-          "description": "Name and version of the summary method.",
+          "description": "Name and version of the summary method and the edge rule (D18) with its parameters.",
           "type": [
             "string",
             "null"
@@ -2461,6 +2468,13 @@
           "description": "a human-readable description of an entity",
           "type": [
             "string",
+            "null"
+          ]
+        },
+        "donor_support_checked": {
+          "description": "False when the atlas has no usable donor column, so the donor-support rule (n_donors_expressing >= 2) was not applied.",
+          "type": [
+            "boolean",
             "null"
           ]
         },

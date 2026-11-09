@@ -29,3 +29,5 @@ code:
 crosswalk: $VISIONKB_DATA_ROOT/config/heca-celltypes.sssom.tsv
 # earlier per-label pseudo-bulk CPM tables (<h5ad stem>_mean.txt.gz, _labelsummary.txt) for the majorclass cross-check
 fpkm_crosscheck_dir: /path/to/workflow_fpkm
+# cells per atlas group x donor (visionkb-atlas step output), for the D18 small-group diagnostics
+atlas_group_donor_cells: /path/to/group_donor_cells.parquet

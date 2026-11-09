@@ -43,6 +43,7 @@ def _atlases(src: Sources) -> tuple[list[dict], dict]:
         reg["_dir"] = str(d)
         regs.append(reg)
         ctx[a["dataset_id"]] = {
+            "donor_col": a.get("donor_col"),
             "tissue": a["tissue"],
             "region_uberon": a.get("region_uberon") or {},
             "access_level": a.get("access_level", "lab"),
@@ -69,12 +70,17 @@ def ingest(name: str, release: str, src: Sources) -> dict:
         groups = pd.concat(
             [pd.read_parquet(Path(r["_dir"]) / "summaries" / "groups.parquet") for r in regs], ignore_index=True
         )
-        rows = heca.load_passing(files)
-        log(f"heca: {len(rows):,} passing rows from {len(files)} atlases")
-        method = (
-            f"visionkb-atlas streamed summary; KG threshold pct_expressing>={heca.MIN_PCT}, n_cells>={heca.MIN_CELLS}"
+        allrows = heca.load_levels(files)
+        donor_ok = {d: bool(a.get("donor_col")) for d, a in ctx.items()}
+        dcp = src.get("atlas_group_donor_cells")
+        donor_cells = pd.read_parquet(dcp) if dcp else None
+        rows, d18 = heca.select_d18(allrows, donor_ok, donor_cells=donor_cells)
+        del allrows
+        log(
+            f"heca: {d18['totals']['kept']:,} of {d18['totals']['candidate_rows']:,} gene x group rows kept by {heca.RULE['decision']} ({len(files)} atlases)"
         )
-        nodes, edges, stats = heca.build(rows, groups, ctx, release, method)
+        nodes, edges, stats = heca.build(rows, groups, ctx, release, heca.method_string())
+        stats["edge_rule"] = d18
     elif name == "retigene":
         import pandas as pd
 
@@ -306,6 +312,11 @@ def build(release: str, src: Sources, *, run_kgx: bool = True) -> Path:
         "atlases": atl,
         "counts": {**release_counts(stage), "neo4j": neo["counts"]},
         "validation": {"status": rep["status"], "n_errors": rep["n_errors"], "n_warnings": rep["n_warnings"]},
+        "expression_edge_rule": {
+            **rep["ingest"]["heca"]["edge_rule"]["rule"],
+            "donor_support_checked": rep["ingest"]["heca"]["edge_rule"]["donor_support_checked"],
+            "robustness_specificity_fraction": rep["ingest"]["heca"]["edge_rule"]["robustness"],
+        },
         "neo4j_import": {
             "dir": "neo4j-import",
             "args_file": "neo4j-import/import.args",
@@ -367,6 +378,62 @@ def report_md(rep: dict) -> str:
         f"Probe gene node `HGNC:16693` with symbol APLN (the design proposal's id): flagged = {st['flagged']} "
         f"(HGNC:16693 is {st['hgnc_symbol_of_HGNC:16693']}); correct id HGNC:16665 passes = {st['correct_id_passes']}. Status {st['status']}.",
     ]
+    er = rep["ingest"].get("heca", {}).get("edge_rule")
+    if er:
+        r = er["rule"]
+        L += [
+            "",
+            f"## Expression edge rule {r['decision']}",
+            "",
+            f"(a) pct_expressing >= {r['min_pct_expressing']} and n_cells >= {r['min_n_cells']}; (b) pseudobulk_cp10k >= "
+            f"{r['specificity_fraction']} x max over groups of the same dataset and level; (c) n_donors_expressing >= "
+            f"{r['min_n_donors_expressing']}. Levels: {', '.join(r['levels'])} (region_majorclass rows stay in the Parquet only).",
+            "",
+            "Donor support checked: "
+            + ", ".join(f"{k.removeprefix('visionkb:ds-')}={v}" for k, v in er["donor_support_checked"].items())
+            + (
+                ". Atlases without a usable donor column: "
+                + ", ".join(k for k, v in er["donor_support_checked"].items() if not v)
+                if not all(er["donor_support_checked"].values())
+                else ". All atlases have a donor column; (c) applied everywhere."
+            ),
+            "",
+            "Rows removed per rule (a, b, c counted separately; 'any' = removed by at least one); candidates = all gene x group rows of the level with an HGNC gene.",
+            "",
+            "| dataset | level | candidates | non-HGNC rows | fail a | fail b | fail c | fail any | kept D18 | kept D8 (old) |",
+            "|---|---|---|---|---|---|---|---|---|---|",
+        ]
+        for x in er["by_dataset_level"]:
+            L.append(
+                f"| {x['dataset_id'].removeprefix('visionkb:ds-')} | {x['level']} | {x['candidates_hgnc']:,} | {x['non_hgnc_gene_rows']:,} | {x['fail_a_detection']:,} | "
+                f"{x['fail_b_specificity']:,} | {x['fail_c_donor_support']:,} | {x['fail_any']:,} | {x['kept']:,} | {x['kept_old_rule_D8']:,} |"
+            )
+        t = er["totals"]
+        L.append(
+            f"| **total** | | {t['candidates_hgnc']:,} | {t['non_hgnc_gene_rows']:,} | {t['fail_a_detection']:,} | {t['fail_b_specificity']:,} | "
+            f"{t['fail_c_donor_support']:,} | {t['fail_any']:,} | {t['kept']:,} | {t['kept_old_rule_D8']:,} |"
+        )
+        L += [
+            "",
+            "Robustness of the specificity fraction (report only; the release uses 0.10):",
+            "",
+            "| fraction | study results | gene x cell type x dataset |",
+            "|---|---|---|",
+        ]
+        L += [
+            f"| {k} | {v['study_results']:,} | {v['edges_gene_celltype_dataset_tissue']:,} |"
+            for k, v in er["robustness"].items()
+        ]
+        L += ["", "Sanity checks: majorclass groups with an edge, old rule D8 -> D18 (celltype-level counts after)", ""]
+        for g, v in er["sanity"].items():
+            L.append(
+                f"- **{g}**: "
+                + "; ".join(
+                    f"{ds}: {', '.join(d.get('D8', [])) or '-'} -> {', '.join(d.get('D18', [])) or '-'}"
+                    for ds, d in sorted(v["majorclass"].items())
+                )
+                + f" | celltype groups D8 {v['celltype_groups']['D8']} -> D18 {v['celltype_groups']['D18']}"
+            )
     L += ["", "## Ingests", ""]
     for s, v in rep["ingest"].items():
         brief = {

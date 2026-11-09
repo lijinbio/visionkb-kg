@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); ver
 
 - LinkML schema `visionkb` 0.1.0 importing a vendored, checksummed Biolink Model 4.4.6; pruned JSON Schema.
 - SSSOM crosswalk of HECA atlas labels to the Cell Ontology (OLS-checked).
+- Expression edge rule D18 with per-rule removal counts, specificity-fraction robustness (0.05/0.10/0.20), marker sanity checks and small-group diagnostics in the validation report.
 - Ingests: HGNC, ontology slims (CL, UBERON eye branch, MONDO, HP; EFO and NCBITaxon via OLS), atlas expression
   (expressed_in + StudyResult + CellState), curated haploinsufficiency review (gene → MONDO/HP), datasets.
 - Validation (term sets, HGNC symbol/id consistency, bmt categories/predicates/domain-range, dangling edges, KGX validator, APLN self-test).

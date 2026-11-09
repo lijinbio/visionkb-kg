@@ -113,7 +113,10 @@ slots:
   pseudobulk cp10k:
     range: float
   expression method:
-    description: Name and version of the summary method.
+    description: Name and version of the summary method and the edge rule (D18) with its parameters.
+  donor support checked:
+    range: boolean
+    description: False when the atlas has no usable donor column, so the donor-support rule (n_donors_expressing >= 2) was not applied.
   pmid:
     description: PMID CURIE (PMID:<n>).
   grade:
@@ -176,7 +179,7 @@ classes:
     description: Per dataset x group expression statistics supporting one expressed_in edge (contracts §5).
     id_prefixes: [visionkb]
     slots: [edge id, dataset id, atlas version, summary level, group label, region label, n cells, n donors,
-      pct expressing, mean log1p cp10k, pseudobulk cp10k, n donors expressing, expression method, supporting data set]
+      pct expressing, mean log1p cp10k, pseudobulk cp10k, n donors expressing, donor support checked, expression method, supporting data set]
     slot_usage:
       edge id: {required: true}
       dataset id: {required: true}
@@ -199,7 +202,7 @@ classes:
       gene expressed_in cell (CL class or CellState) in an anatomical and species context; one edge per
       (gene, cell type, tissue, species) with summary properties; details in ExpressionStudyResult nodes.
     slots: [anatomical context qualifier, species context qualifier, has study results, max pct expressing,
-      max mean log1p cp10k, n datasets, curation status, visibility, kg release]
+      max mean log1p cp10k, n datasets, donor support checked, curation status, visibility, kg release]
     slot_usage:
       object: {range: cell}
       predicate: {equals_string: "biolink:expressed_in"}
