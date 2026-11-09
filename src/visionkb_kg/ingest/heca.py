@@ -99,29 +99,43 @@ def build(
             }
         )
     vis = {ds: ("public" if a.get("access_level") == "public" else "lab") for ds, a in atlases.items()}
+    # aggregate per edge with sorted columns (one pass; no per-group pandas objects)
+    rows = rows.sort_values(["edge_id", "sr_id"], kind="mergesort").reset_index(drop=True)
+    rows["public"] = rows["dataset_id"].map(lambda d: vis[d] == "public")
+    agg = rows.groupby("edge_id", sort=True).agg(
+        gene_id=("gene_id", "first"),
+        cell_type_id=("cell_type_id", "first"),
+        ctx=("ctx", "first"),
+        sr_ids=("sr_id", list),
+        datasets=("dataset_id", lambda x: sorted(set(x))),
+        max_pct=("pct_expressing", "max"),
+        max_mean=("mean_log1p_cp10k", "max"),
+        all_public=("public", "all"),
+    )
     edges = []
-    for eid, g in rows.groupby("edge_id", sort=True):
-        f = g.iloc[0]
+    for eid, r in zip(agg.index, agg.itertuples(index=False), strict=True):
         e = make_edge(
-            f.gene_id,
+            r.gene_id,
             "biolink:expressed_in",
-            f.cell_type_id,
+            r.cell_type_id,
             source=SOURCE,
             knowledge_level="observation",
             agent_type="data_analysis_pipeline",
             release=release,
-            anatomical_context_qualifier=list(f.ctx),
+            anatomical_context_qualifier=list(r.ctx),
             species_context_qualifier=HUMAN,
-            has_study_results=sorted(g.sr_id),
-            evidence_count=len(g),
-            n_datasets=int(g.dataset_id.nunique()),
-            max_pct_expressing=round(float(g.pct_expressing.max()), 6),
-            max_mean_log1p_cp10k=round(float(g.mean_log1p_cp10k.max()), 6),
-            supporting_data_set=sorted(set(g.dataset_id)),
-            visibility="public" if all(vis[d] == "public" for d in set(g.dataset_id)) else "lab",
+            has_study_results=r.sr_ids,
+            evidence_count=len(r.sr_ids),
+            n_datasets=len(r.datasets),
+            max_pct_expressing=round(float(r.max_pct), 6),
+            max_mean_log1p_cp10k=round(float(r.max_mean), 6),
+            supporting_data_set=r.datasets,
+            visibility="public" if r.all_public else "lab",
         )
-        assert e["id"] == eid
+        if e["id"] != eid:
+            raise RuntimeError(f"edge id mismatch for {eid}")
         edges.append(e)
+
     # cell states
     cs = groups[groups["cell_type_id"].str.startswith("visionkb:cs-")]
     nodes = []
@@ -136,6 +150,7 @@ def build(
                 "name": f"{f.group_label} ({f.dataset_id.removeprefix('visionkb:ds-')})",
                 "group_label": f.group_label,
                 "in_dataset": f.dataset_id,
+                "dataset_id": f.dataset_id,
                 "summary_level": sorted(set(g.level)),
                 "parent_cell_type": parent,
                 "mapping_predicate": next((p for p in g["mapping_predicate"] if p), None),

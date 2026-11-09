@@ -186,10 +186,7 @@ def test_retigene_build():
     sym = {"GENEA": "HGNC:1", "GENEB": "HGNC:2", "GENEN": "HGNC:3", "GENEU": "HGNC:4"}
     nodes, edges, st = retigene.build(genes, ev, mapping, sym, "visionkb-test.0")
     by = {e["subject"]: e for e in edges}
-    assert (
-        by["HGNC:1"]["predicate"] == "biolink:causes"
-        and by["HGNC:2"]["predicate"] == "biolink:gene_associated_with_condition"
-    )
+    assert by["HGNC:1"]["predicate"] == "biolink:causes" and by["HGNC:2"]["predicate"] == "biolink:has_phenotype"
     assert "HGNC:3" not in by and "HGNC:4" not in by
     assert by["HGNC:1"]["publications"] == ["PMID:1"]
     assert (

@@ -70,7 +70,8 @@ def test_neo4j_pack_verify(tmp_path, mini_graph):
     cs = (rel / "neo4j-import" / "nodes_CellState.csv").read_text()
     assert "CellState;Cell;" in cs
     args = (rel / "neo4j-import" / "import.args").read_text()
-    assert "--nodes=nodes_Gene.csv" in args and "/" not in args.replace("--", "")
+    assert "--nodes=./nodes_Gene.csv" in args
+    assert all(x.split("=", 1)[1].startswith("./") for x in args.split() if x.startswith(("--nodes", "--rel")))
     assert "entity_search" in (rel / "neo4j-import" / "post_import.cypher").read_text()
     (rel / "RELEASE").write_text("visionkb-test.0\n")
     (rel / "manifest.json").write_text(json.dumps({"kg_release": "visionkb-test.0", "files": file_list(rel)}))

@@ -36,9 +36,8 @@ def nodes(df: pd.DataFrame, extra_ids: set[str]) -> tuple[list[dict], dict]:
             {
                 "id": r.hgnc_id,
                 "category": ["biolink:Gene"],
-                "name": r.symbol,
+                "name": r.name,
                 "symbol": r.symbol,
-                "full_name": r.name,
                 "synonym": sorted(set(split(r.alias_symbol) + split(r.prev_symbol))),
                 "xref": sorted(set(xref)),
                 "in_taxon": HUMAN,

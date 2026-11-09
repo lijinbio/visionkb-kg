@@ -1,6 +1,7 @@
 """Retigene curated haploinsufficiency review -> gene to disease (MONDO) / phenotype (HP) edges with publications.
 
-Grades (curator review_grade): A -> biolink:causes; B (hedged/conflicting) -> biolink:gene_associated_with_condition;
+Grades (curator review_grade): A -> biolink:causes; B (hedged/conflicting) -> biolink:gene_associated_with_condition
+(MONDO) or biolink:has_phenotype (HP);
 N -> no edge (reported). subject_form_or_variant_qualifier = loss_of_function_variant_form (heterozygous LoF). Phenotype
 text is mapped through a curated query table searched in OLS: a term is accepted only when its label or an exact
 synonym equals the query; nothing is guessed, unmapped genes are reported. Evidence sentences become
@@ -19,7 +20,16 @@ from .common import make_edge
 
 SOURCE = "infores:visionkb-retigene"
 OLS = "https://www.ebi.ac.uk/ols4/api/search"
+# A -> causes; B (hedged/conflicting) -> gene_associated_with_condition (MONDO) or has_phenotype (HP)
 PREDICATE = {"A": "biolink:causes", "B": "biolink:gene_associated_with_condition"}
+
+
+def predicate_for(grade: str, obj: str) -> str:
+    if grade == "B" and obj.startswith("HP:"):
+        return "biolink:has_phenotype"
+    return PREDICATE[grade]
+
+
 MAX_TEXT = 300
 
 
@@ -164,7 +174,7 @@ def build(genes: pd.DataFrame, evidence: pd.DataFrame, mapping: pd.DataFrame, hg
         for o in objs.itertuples(index=False):
             e = make_edge(
                 hid,
-                PREDICATE[grade],
+                predicate_for(grade, o.object_id),
                 o.object_id,
                 source=SOURCE,
                 knowledge_level="knowledge_assertion",

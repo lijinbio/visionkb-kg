@@ -152,20 +152,21 @@ def write_import(nodes_path: Path, edges_path: Path, outdir: Path, tk) -> dict:
         files["relationships"].append(fn)
         counts["relationships"]["supporting_data_set"] = len(sds)
     args = ["--id-type=string", f"--array-delimiter={ARRAY_DELIM}", "--skip-duplicate-nodes=false", "--bad-tolerance=0"]
-    args += [f"--nodes={f}" for f in files["nodes"]] + [f"--relationships={f}" for f in files["relationships"]]
+    # "./" prefix: neo4j-admin 2026.10 rejects bare file names ("Unable to find the parent of the path"); run from neo4j-import/
+    args += [f"--nodes=./{f}" for f in files["nodes"]] + [f"--relationships=./{f}" for f in files["relationships"]]
     (outdir / "import.args").write_text("\n".join(args) + "\n")
     labels_ft = sorted(set(counts["nodes"]) - FULLTEXT_EXCLUDE)
     cy = [
         "// VisionKB post-import schema (contracts §5). Run once after neo4j-admin database import full.",
-        "CREATE CONSTRAINT named_thing_id IF NOT EXISTS FOR (n:NamedThing) REQUIRE n.id IS UNIQUE;",
-        "CREATE INDEX study_result_edge_id IF NOT EXISTS FOR (n:StudyResult) ON (n.edge_id);",
-        "CREATE INDEX study_result_dataset IF NOT EXISTS FOR (n:StudyResult) ON (n.dataset_id);",
+        "CREATE CONSTRAINT namedthing_id IF NOT EXISTS FOR (n:NamedThing) REQUIRE n.id IS UNIQUE;",
+        "CREATE INDEX studyresult_edge_id IF NOT EXISTS FOR (n:StudyResult) ON (n.edge_id);",
+        "CREATE INDEX studyresult_dataset_id IF NOT EXISTS FOR (n:StudyResult) ON (n.dataset_id);",
         "CREATE INDEX gene_symbol IF NOT EXISTS FOR (n:Gene) ON (n.symbol);",
         f"CREATE FULLTEXT INDEX entity_search IF NOT EXISTS FOR (n:{'|'.join(labels_ft)}) ON EACH [n.name, n.symbol, n.synonym];",
     ]
     for t in sorted(counts["relationships"]):
         if t != "supporting_data_set":
-            cy.append(f"CREATE INDEX rel_{t}_id IF NOT EXISTS FOR ()-[r:{t}]-() ON (r.id);")
+            cy.append(f"CREATE INDEX rel_id_{t} IF NOT EXISTS FOR ()-[r:{t}]-() ON (r.id);")
     cy.append("CALL db.awaitIndexes(3600);")
     (outdir / "post_import.cypher").write_text("\n".join(cy) + "\n")
     return {"files": files, "counts": counts}
