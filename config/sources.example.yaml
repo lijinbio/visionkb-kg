@@ -1,0 +1,31 @@
+# VisionKB build inputs example: copy to $VISIONKB_DATA_ROOT/config/sources.yaml and set real paths.
+hgnc:
+  path: /path/to/downloads/YYYY-MM-DD/hgnc_complete_set.txt
+  date: "2026-11-09"
+  url: https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt
+  license: CC0-1.0
+ontologies:
+  cl: {path: /path/to/downloads/YYYY-MM-DD/cl.obo, url: "http://purl.obolibrary.org/obo/cl.obo", license: CC-BY-4.0}
+  uberon: {path: /path/to/downloads/YYYY-MM-DD/uberon-basic.obo, url: "http://purl.obolibrary.org/obo/uberon/uberon-basic.obo", license: CC-BY-3.0}
+  mondo: {path: /path/to/downloads/YYYY-MM-DD/mondo.obo, url: "http://purl.obolibrary.org/obo/mondo.obo", license: CC-BY-4.0}
+  hp: {path: /path/to/downloads/YYYY-MM-DD/hp.obo, url: "http://purl.obolibrary.org/obo/hp.obo", license: "https://hpo.jax.org/license"}
+  efo: {url: "https://www.ebi.ac.uk/ols4/api/ontologies/efo", license: Apache-2.0}
+  ncbitaxon: {url: "https://www.ebi.ac.uk/ols4/api/ontologies/ncbitaxon", license: "NCBI Taxonomy, public domain"}
+atlases_config: $VISIONKB_DATA_ROOT/config/atlases.yaml
+atlas_root: $VISIONKB_DATA_ROOT/atlas
+retigene:
+  dir: /path/to/retigene_curation/2026-10-30-retigene-reference-review
+  version: "2026-10-30 review; curator grades 2026-11-04"
+  genes: reference_genes_reviewed.csv
+  evidence: reference_evidence.csv
+  papers: reference_papers.csv
+  phenotype_queries: $VISIONKB_DATA_ROOT/config/retigene_phenotype_queries.yaml
+  license: lab-internal
+code:
+  visionkb-kg: /path/to/github/visionkb-kg
+  visionkb-atlas: /path/to/github/visionkb-atlas
+  visionkb-atlas-version: 0.1.0
+# label -> CL crosswalk used by the atlas annotate step (copy of visionkb-kg src/visionkb_kg/mappings/heca-celltypes.sssom.tsv)
+crosswalk: $VISIONKB_DATA_ROOT/config/heca-celltypes.sssom.tsv
+# earlier per-label pseudo-bulk CPM tables (<h5ad stem>_mean.txt.gz, _labelsummary.txt) for the majorclass cross-check
+fpkm_crosscheck_dir: /path/to/workflow_fpkm

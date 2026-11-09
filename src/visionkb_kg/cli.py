@@ -1,0 +1,432 @@
+"""visionkb-kg command line: ingest <source>, build, pack, verify, all."""
+
+from __future__ import annotations
+
+import argparse
+import datetime
+import json
+import shutil
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+import yaml
+
+from . import BIOLINK_VERSION, SCHEMA_VERSION, __version__
+from .kgx import read_jsonl, write_source
+from .sources import INFORES, Sources, build_dir, data_root, dirname_of, release_dir
+
+INGESTS = ("hgnc", "heca", "retigene", "datasets", "ontologies")
+ORDER = ("ontologies", "hgnc", "heca", "retigene", "datasets")  # merge priority: first source wins for scalars
+
+
+def log(msg: str):
+    print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+
+
+def wjson(obj, path: Path):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(obj, indent=2, sort_keys=True, default=str) + "\n")
+
+
+def _atlases(src: Sources) -> tuple[list[dict], dict]:
+    """Registry records of the atlases in this release, and per-dataset context from atlases.yaml."""
+    cfg = yaml.safe_load(Path(src.get("atlases_config")).read_text())
+    version = cfg.get("atlas_version")
+    root = Path(src.get("atlas_root"))
+    regs, ctx = [], {}
+    for a in cfg["atlases"]:
+        v = a.get("atlas_version", version)
+        d = root / dirname_of(a["dataset_id"]) / v
+        reg = json.loads((d / "registry.json").read_text())
+        reg["_dir"] = str(d)
+        regs.append(reg)
+        ctx[a["dataset_id"]] = {
+            "tissue": a["tissue"],
+            "region_uberon": a.get("region_uberon") or {},
+            "access_level": a.get("access_level", "lab"),
+        }
+    return regs, ctx
+
+
+def _hgnc_df(src: Sources):
+    from .ingest import hgnc
+
+    return hgnc.load(src.get("hgnc", "path"))
+
+
+def ingest(name: str, release: str, src: Sources) -> dict:
+    out = build_dir(release) / "kgx" / name
+    rep_dir = build_dir(release) / "reports"
+    if name == "heca":
+        import pandas as pd
+
+        from .ingest import heca
+
+        regs, ctx = _atlases(src)
+        files = [Path(r["_dir"]) / "summaries" / "expr_summary.parquet" for r in regs]
+        groups = pd.concat(
+            [pd.read_parquet(Path(r["_dir"]) / "summaries" / "groups.parquet") for r in regs], ignore_index=True
+        )
+        rows = heca.load_passing(files)
+        log(f"heca: {len(rows):,} passing rows from {len(files)} atlases")
+        method = (
+            f"visionkb-atlas streamed summary; KG threshold pct_expressing>={heca.MIN_PCT}, n_cells>={heca.MIN_CELLS}"
+        )
+        nodes, edges, stats = heca.build(rows, groups, ctx, release, method)
+    elif name == "retigene":
+        import pandas as pd
+
+        from .ingest import hgnc, retigene
+
+        r = src.get("retigene")
+        d = Path(r["dir"])
+        genes = pd.read_csv(d / r["genes"])
+        ev = pd.read_csv(d / r["evidence"])
+        queries = yaml.safe_load(Path(r["phenotype_queries"]).read_text())["genes"]
+        mapping = retigene.map_phenotypes(genes, queries)
+        rep_dir.mkdir(parents=True, exist_ok=True)
+        mapping.to_csv(rep_dir / "retigene_phenotype_mapping.tsv", sep="\t", index=False)
+        nodes, edges, stats = retigene.build(genes, ev, mapping, hgnc.symbol_index(_hgnc_df(src)), release)
+        stats["mapping"] = mapping["status"].value_counts().to_dict()
+    elif name == "datasets":
+        from .ingest import datasets
+
+        regs, _ = _atlases(src)
+        nodes = [datasets.node({k: v for k, v in r.items() if k != "_dir"}, release) for r in regs]
+        edges = []
+        stats = {"datasets": len(nodes)}
+    elif name == "hgnc":
+        import pyarrow.dataset as pds
+
+        from .ingest import hgnc
+
+        extra = set()
+        for s in ("heca", "retigene"):
+            for e in read_jsonl(build_dir(release) / "kgx" / s / "edges.jsonl"):
+                for v in (e["subject"], e["object"]):
+                    if v.startswith("HGNC:"):
+                        extra.add(v)
+        regs, _ = _atlases(src)
+        for r in regs:
+            t = pds.dataset(str(Path(r["_dir"]) / "summaries" / "expr_summary.parquet")).to_table(columns=["gene_id"])
+            extra |= {g for g in set(t.column("gene_id").to_pylist()) if g.startswith("HGNC:")}
+        nodes, stats = hgnc.nodes(_hgnc_df(src), extra)
+        edges = []
+    elif name == "ontologies":
+        from .ingest import ontologies
+
+        ref = set()
+        for s in ("heca", "retigene", "datasets", "hgnc"):
+            p = build_dir(release) / "kgx" / s
+            for n in read_jsonl(p / "nodes.jsonl"):
+                for k in ("parent_cell_type", "in_taxon", "species", "assay"):
+                    if isinstance(n.get(k), str):
+                        ref.add(n[k])
+                for k in ("tissue", "cell_types"):
+                    ref |= set(n.get(k) or [])
+            for e in read_jsonl(p / "edges.jsonl"):
+                ref |= {e["subject"], e["object"], *(e.get("anatomical_context_qualifier") or [])}
+                if e.get("species_context_qualifier"):
+                    ref.add(e["species_context_qualifier"])
+        ref = {x for x in ref if x.split(":")[0] in ("CL", "UBERON", "MONDO", "HP", "EFO", "NCBITaxon")}
+        obo = ontologies.load_obo_sets({k: src.get("ontologies", k, "path") for k in ("cl", "uberon", "mondo", "hp")})
+        nodes, edges, stats = ontologies.slim(ref, obo, release)
+    else:
+        raise SystemExit(f"unknown source {name}")
+    stats.update(write_source(out, nodes, edges))
+    wjson(stats, rep_dir / f"ingest_{name}.json")
+    log(f"{name}: {stats['nodes']:,} nodes, {stats['edges']:,} edges")
+    return stats
+
+
+def _git(path: str | None) -> str | None:
+    if not path:
+        return None
+    try:
+        return subprocess.run(
+            ["git", "-C", path, "rev-parse", "HEAD"], capture_output=True, text=True, check=True
+        ).stdout.strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
+
+
+def term_sets(src: Sources):
+    from .ingest import hgnc as hg
+    from .obo import read_obo
+    from .validate import TermSets
+
+    df = _hgnc_df(src)
+    a = df[df.status == "Approved"]
+    obo = {}
+    for key, pre in (("cl", "CL"), ("uberon", "UBERON"), ("mondo", "MONDO"), ("hp", "HP")):
+        _, terms = read_obo(src.get("ontologies", key, "path"), prefixes=(pre,))
+        obo[pre] = {t for t, r in terms.items() if not r["obsolete"]}
+    del hg
+    return TermSets(dict(zip(a.hgnc_id, a.symbol, strict=True)), obo)
+
+
+def build(release: str, src: Sources, *, run_kgx: bool = True) -> Path:
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    from .biolink import biolink_sha256, toolkit
+    from .neo4j_csv import write_import
+    from .release import file_list, merge, sha256_file
+    from .validate import apln_self_test, validate_release
+
+    final = release_dir(release)
+    if final.exists():
+        raise SystemExit(f"{final} exists; releases are immutable")
+    b = build_dir(release)
+    stage = b / "release" / release
+    if stage.exists():
+        shutil.rmtree(stage)
+    stage.mkdir(parents=True)
+    (stage / "RELEASE").write_text(release + "\n")
+    log("merge")
+    mstats = merge([b / "kgx" / s for s in ORDER], stage / "kgx")
+    wjson(mstats, b / "reports" / "merge.json")
+    log("validate")
+    ts = term_sets(src)
+    rep = validate_release(stage / "kgx" / "nodes.jsonl", stage / "kgx" / "edges.jsonl", ts, run_kgx=run_kgx, log=log)
+    rep["self_tests"] = {"apln_wrong_id": apln_self_test(ts)}
+    rep["ingest"] = {s: json.loads((b / "reports" / f"ingest_{s}.json").read_text()) for s in INGESTS}
+    rep["release"] = release
+    if rep["self_tests"]["apln_wrong_id"]["status"] != "pass":
+        rep["status"] = "fail"
+    wjson(rep, stage / "validation" / "report.json")
+    (stage / "validation" / "report.md").write_text(report_md(rep))
+    shutil.copy(src.crosswalk, stage / "validation" / "heca_celltype_crosswalk.sssom.tsv")
+    if (b / "reports" / "retigene_phenotype_mapping.tsv").exists():
+        shutil.copy(
+            b / "reports" / "retigene_phenotype_mapping.tsv", stage / "validation" / "retigene_phenotype_mapping.tsv"
+        )
+    log(f"validation {rep['status']}: {rep['n_errors']} errors, {rep['n_warnings']} warnings")
+    log("neo4j-import")
+    neo = write_import(stage / "kgx" / "nodes.jsonl", stage / "kgx" / "edges.jsonl", stage / "neo4j-import", toolkit())
+    log("summaries + registry")
+    regs, _ = _atlases(src)
+    tables = []
+    atl = []
+    for r in sorted(regs, key=lambda x: x["id"]):
+        f = Path(r["_dir"]) / "summaries" / "expr_summary.parquet"
+        tables.append(pq.read_table(f))
+        atl.append({"dataset_id": r["id"], "atlas_version": r["version"], "summary_sha256": sha256_file(f)})
+    (stage / "summaries").mkdir()
+    pq.write_table(pa.concat_tables(tables), stage / "summaries" / "expr_summary.parquet", compression="zstd")
+    del tables
+    from .ingest.datasets import registry_line
+
+    (stage / "registry").mkdir()
+    with open(stage / "registry" / "datasets.jsonl", "w") as f:
+        for r in sorted(regs, key=lambda x: x["id"]):
+            f.write(
+                json.dumps(registry_line({k: v for k, v in r.items() if k != "_dir"}, release), sort_keys=True) + "\n"
+            )
+    srcs = []
+    h = src.get("hgnc")
+    srcs.append(
+        {
+            "name": "HGNC complete set",
+            "version": str(h.get("date")),
+            "path_or_url": h["url"],
+            "sha256": sha256_file(Path(h["path"])),
+            "license": h.get("license"),
+            "infores": INFORES["hgnc"],
+        }
+    )
+    vers = rep["ingest"]["ontologies"]["versions"]
+    for key, pre in (
+        ("cl", "CL"),
+        ("uberon", "UBERON"),
+        ("mondo", "MONDO"),
+        ("hp", "HP"),
+        ("efo", "EFO"),
+        ("ncbitaxon", "NCBITaxon"),
+    ):
+        o = src.get("ontologies", key) or {}
+        rec = {
+            "name": pre,
+            "version": vers.get(pre),
+            "path_or_url": o.get("url"),
+            "license": o.get("license"),
+            "infores": INFORES[key],
+        }
+        if o.get("path"):
+            rec["sha256"] = sha256_file(Path(o["path"]))
+        srcs.append(rec)
+    rg = src.get("retigene")
+    srcs.append(
+        {
+            "name": "retigene curated haploinsufficiency review",
+            "version": rg.get("version"),
+            "path_or_url": "lab-internal",
+            "sha256": sha256_file(Path(rg["dir"]) / rg["genes"]),
+            "license": rg.get("license"),
+            "infores": INFORES["retigene"],
+        }
+    )
+    srcs.append(
+        {
+            "name": "HECA atlas summaries",
+            "version": sorted({r["version"] for r in regs}),
+            "path_or_url": "summaries/expr_summary.parquet",
+            "license": "lab-internal",
+            "infores": INFORES["heca"],
+        }
+    )
+    srcs.append(
+        {
+            "name": "HECA label to CL crosswalk",
+            "version": "0.1",
+            "path_or_url": "validation/heca_celltype_crosswalk.sssom.tsv",
+            "sha256": sha256_file(src.crosswalk),
+            "license": "CC-BY-4.0",
+            "infores": INFORES["heca"],
+        }
+    )
+    n_sr = rep["nodes_by_category"].get("biolink:StudyResult", 0)
+    manifest = {
+        "kg_release": release,
+        "created_utc": datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "biolink_version": BIOLINK_VERSION,
+        "biolink_schema_sha256": biolink_sha256(),
+        "schema_version": SCHEMA_VERSION,
+        "code": {
+            "visionkb-kg": {"version": __version__, "git_sha": _git(src.get("code", "visionkb-kg"))},
+            "visionkb-atlas": {
+                "version": src.get("code", "visionkb-atlas-version"),
+                "git_sha": _git(src.get("code", "visionkb-atlas")),
+            },
+        },
+        "sources": srcs,
+        "atlases": atl,
+        "counts": {
+            "nodes_by_category": rep["nodes_by_category"],
+            "edges_by_predicate": rep["edges_by_predicate"],
+            "study_results": n_sr,
+            "nodes": mstats["nodes"],
+            "edges": mstats["edges"],
+            "neo4j": neo["counts"],
+        },
+        "validation": {"status": rep["status"], "n_errors": rep["n_errors"], "n_warnings": rep["n_warnings"]},
+        "neo4j_import": {
+            "dir": "neo4j-import",
+            "args_file": "neo4j-import/import.args",
+            "post_import": "neo4j-import/post_import.cypher",
+            "run_from": "neo4j-import",
+        },
+        "files": None,
+    }
+    manifest["files"] = file_list(stage)
+    wjson(manifest, stage / "manifest.json")
+    final.parent.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(stage), str(final))
+    log(f"release written: {final}")
+    return final
+
+
+def report_md(rep: dict) -> str:
+    L = [
+        f"# Validation report: {rep['release']}",
+        "",
+        f"Status: **{rep['status']}**; errors {rep['n_errors']}, warnings {rep['n_warnings']}.",
+        f"Biolink {rep['biolink_version']} (bmt, vendored schema).",
+        "",
+        "## Nodes by category",
+        "",
+        "| category | n |",
+        "|---|---|",
+    ]
+    L += [f"| {k} | {v:,} |" for k, v in rep["nodes_by_category"].items()]
+    L += ["", "## Edges by predicate", "", "| predicate | n |", "|---|---|"]
+    L += [f"| {k} | {v:,} |" for k, v in rep["edges_by_predicate"].items()]
+    L += ["", "## Category-predicate triples (bmt domain/range)", "", "| triple | n | bmt valid |", "|---|---|---|"]
+    L += [f"| {k} | {v['count']:,} | {v['bmt_valid']} |" for k, v in rep["category_predicate_triples"].items()]
+    for lvl in ("errors", "warnings"):
+        L += ["", f"## {lvl.capitalize()}", ""]
+        if not rep[lvl]:
+            L.append("none")
+        for k, v in rep[lvl].items():
+            L.append(f"- `{k}`: {v['count']:,} (e.g. {json.dumps(v['examples'][:3], default=str)[:400]})")
+    st = rep["self_tests"]["apln_wrong_id"]
+    L += [
+        "",
+        "## Self-test: wrong APLN id",
+        "",
+        f"Probe gene node `HGNC:16693` with symbol APLN (the design proposal's id): flagged = {st['flagged']} "
+        f"(HGNC:16693 is {st['hgnc_symbol_of_HGNC:16693']}); correct id HGNC:16665 passes = {st['correct_id_passes']}. Status {st['status']}.",
+    ]
+    L += ["", "## Ingests", ""]
+    for s, v in rep["ingest"].items():
+        brief = {
+            k: v[k]
+            for k in v
+            if not isinstance(v[k], list | dict) or k in ("versions", "mapping", "edges_by_predicate", "rows_by_level")
+        }
+        L.append(f"- **{s}**: {json.dumps(brief, default=str)[:1200]}")
+        for k in (
+            "flagged",
+            "extra_ids_not_approved",
+            "referenced_not_found_or_obsolete",
+            "cell_states_without_parent",
+        ):
+            if v.get(k):
+                L.append(f"  - {k}: {json.dumps(v[k], default=str)[:1500]}")
+    return "\n".join(L) + "\n"
+
+
+def main(argv=None):
+    p = argparse.ArgumentParser(prog="visionkb-kg", description=__doc__)
+    p.add_argument("--version", action="version", version=__version__)
+    p.add_argument("--sources", help="sources.yaml (default $VISIONKB_DATA_ROOT/config/sources.yaml)")
+    p.add_argument(
+        "--work-dir", help="build working root (default $VISIONKB_KG_WORK or $VISIONKB_WORK_DIR/visionkb-kg)"
+    )
+    sub = p.add_subparsers(dest="cmd", required=True)
+    s = sub.add_parser("ingest")
+    s.add_argument("source", choices=INGESTS)
+    s.add_argument("--release", required=True)
+    s = sub.add_parser("build")
+    s.add_argument("release")
+    s.add_argument("--no-kgx", action="store_true", help="skip the KGX validator pass")
+    s = sub.add_parser("pack")
+    s.add_argument("release")
+    s.add_argument("--out", help="bundle dir (default $VISIONKB_DATA_ROOT/kg/bundles)")
+    s = sub.add_parser("verify")
+    s.add_argument("bundle")
+    s.add_argument("--extract-to")
+    s = sub.add_parser("all")
+    s.add_argument("release")
+    args = p.parse_args(argv)
+    if args.work_dir:
+        import os
+
+        os.environ["VISIONKB_KG_WORK"] = str(Path(args.work_dir).resolve())
+    if args.cmd == "verify":
+        from .release import verify
+
+        res = verify(Path(args.bundle), Path(args.extract_to) if args.extract_to else None)
+        print(json.dumps(res, indent=2))
+        sys.exit(0 if res["status"] == "pass" else 1)
+    if args.cmd == "pack":
+        from .release import pack
+
+        out = Path(args.out) if args.out else data_root() / "kg" / "bundles"
+        print(json.dumps(pack(release_dir(args.release), out), indent=2))
+        return
+    src = Sources.load(args.sources)
+    if args.cmd == "ingest":
+        ingest(args.source, args.release, src)
+    elif args.cmd == "build":
+        build(args.release, src, run_kgx=not args.no_kgx)
+    elif args.cmd == "all":
+        for s in ("heca", "retigene", "datasets", "hgnc", "ontologies"):
+            ingest(s, args.release, src)
+        build(args.release, src)
+
+
+if __name__ == "__main__":
+    main()

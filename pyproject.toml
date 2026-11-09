@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "visionkb-kg"
+version = "0.1.0"
+description = "VisionKB knowledge graph build: Biolink 4.4.6 LinkML extension, per-source ingests to KGX, validation, Neo4j release bundles"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+authors = [{ name = "Rui Chen Lab, University of California, Irvine" }]
+dependencies = [
+  "linkml>=1.12,<1.13",
+  "kgx>=2.8,<2.9",
+  "bmt>=1.5,<1.6",
+  "pandas>=2.2,<3",
+  "pyarrow>=18",
+  "pyyaml>=6",
+  "requests>=2.31",
+]
+
+[project.scripts]
+visionkb-kg = "visionkb_kg.cli:main"
+
+[project.urls]
+Repository = "https://github.com/lijinbio/visionkb-kg"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+visionkb_kg = ["schema/*.yaml", "schema/biolink/*.yaml", "schema/generated/*.json", "mappings/*.tsv"]
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.16", "pre-commit>=4", "jsonschema>=4"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["src/visionkb_kg/schema"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF"]
+ignore = ["E501", "S101", "S603", "S607", "S310"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]

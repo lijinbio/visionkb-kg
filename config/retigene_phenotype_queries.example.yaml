@@ -1,0 +1,7 @@
+# Phenotype text -> ontology search terms for the retigene ingest (example; the real table lives on the data root).
+# A term is accepted only if its label or an exact synonym equals the query (case-insensitive, via OLS).
+# confidence: high (query = text) | medium (abbreviation expanded / qualifier dropped) | broad (deliberately broader term).
+genes:
+  GENE1: [{query: retinitis pigmentosa, ontology: mondo, confidence: medium, note: "RP expanded"}]
+  GENE2: [{query: abnormal eye morphology, ontology: hp, confidence: broad}]
+  GENE3: []   # no named condition: reported, no edge

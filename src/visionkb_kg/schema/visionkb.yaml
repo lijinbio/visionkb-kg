@@ -1,0 +1,272 @@
+id: https://purl.visionkb.org/schema/visionkb
+name: visionkb
+title: VisionKB extension of the Biolink Model
+description: >-
+  VisionKB classes and slots on top of Biolink Model 4.4.6 (decisions D3-D5). Biolink categories, predicates,
+  qualifiers and provenance slots are used natively; this schema adds only what Biolink lacks: dataset-specific
+  cell states, dataset-registry fields, expression and literature study-result fields, and imaging stubs.
+version: 0.1.0
+license: MIT
+see_also:
+  - https://github.com/biolink/biolink-model/tree/v4.4.6
+prefixes:
+  linkml: https://w3id.org/linkml/
+  biolink: https://w3id.org/biolink/vocab/
+  visionkb: https://purl.visionkb.org/id/
+  CL: http://purl.obolibrary.org/obo/CL_
+  UBERON: http://purl.obolibrary.org/obo/UBERON_
+  EFO: http://www.ebi.ac.uk/efo/EFO_
+  NCBITaxon: http://purl.obolibrary.org/obo/NCBITaxon_
+  skos: http://www.w3.org/2004/02/skos/core#
+default_prefix: visionkb
+default_range: string
+imports:
+  - linkml:types
+  # Biolink Model pinned to 4.4.6: byte-identical copy of
+  # https://raw.githubusercontent.com/biolink/biolink-model/v4.4.6/biolink-model.yaml
+  # (sha256 5837907e1eb579812856579feea5a099665252f2454bd6f950d63fbb00f4c9f0, checked by tests)
+  - biolink/biolink-model_v4.4.6
+
+slots:
+  # ---- cell states ----
+  parent cell type:
+    description: The Cell Ontology class this dataset-specific state is a subclass of.
+    range: cell
+  in dataset:
+    description: Dataset in which the cell state or result was observed.
+    range: VisionKBDataset
+  summary level:
+    description: Annotation level of an atlas group.
+    range: SummaryLevelEnum
+  group label:
+    description: Label of the group as written in the atlas (for region_majorclass, region|majorclass).
+  region label:
+    description: Region label of an atlas group (e.g. fovea), when the level is region_majorclass.
+  mapping predicate:
+    description: SSSOM predicate of the label-to-CL crosswalk row (skos:exactMatch, skos:broadMatch, skos:closeMatch).
+  mapping confidence:
+    range: float
+  # ---- dataset registry ----
+  atlas version:
+    description: Version of the atlas build (e.g. heca-2026.05).
+  species:
+    range: uriorcurie
+    description: NCBITaxon CURIE.
+  tissue:
+    range: uriorcurie
+    multivalued: true
+    description: UBERON CURIEs.
+  assay:
+    range: uriorcurie
+    description: EFO CURIE of the assay.
+  disease context:
+    range: uriorcurie
+    description: MONDO CURIE when the dataset is disease-specific.
+  stage:
+    description: Developmental stage (HsapDv CURIE or text).
+  n cells:
+    range: integer
+  n donors:
+    range: integer
+  n samples:
+    range: integer
+  n donors expressing:
+    range: integer
+    description: Donors in which at least 10 percent of that donor's group cells express the gene.
+  levels:
+    range: SummaryLevelEnum
+    multivalued: true
+  cell types:
+    range: uriorcurie
+    multivalued: true
+    description: CL or CellState ids annotated in the dataset.
+  h5ad path:
+    description: HPC-side path of the source h5ad (metadata only; never opened by the service).
+  soma uri:
+    description: HPC-side URI of the TileDB-SOMA experiment (metadata only).
+  checksum:
+    description: sha256:<hex> of the source h5ad, or size+mtime when hashing was disabled.
+  access level:
+    range: AccessLevelEnum
+  citation:
+    description: DOI of the dataset publication.
+  kg release:
+    description: KG release id (visionkb-YYYY.MM.N).
+  bind:
+    range: BindRecord
+    inlined: true
+  bind path:
+  bind name:
+  bind role:
+    range: BindRoleEnum
+  # ---- study results ----
+  edge id:
+    description: Deterministic id of the edge this study result supports (visionkb:e-<sha1>).
+  dataset id:
+    range: uriorcurie
+  pct expressing:
+    range: float
+    minimum_value: 0
+    maximum_value: 1
+  mean log1p cp10k:
+    range: float
+  pseudobulk cp10k:
+    range: float
+  expression method:
+    description: Name and version of the summary method.
+  pmid:
+    description: PMID CURIE (PMID:<n>).
+  grade:
+    range: RetigeneGradeEnum
+  review note:
+  # ---- edge summary properties ----
+  max pct expressing:
+    range: float
+  max mean log1p cp10k:
+    range: float
+  n datasets:
+    range: integer
+  curation status:
+    range: CurationStatusEnum
+  visibility:
+    range: VisibilityEnum
+  # ---- imaging stubs ----
+  imaging modality:
+    range: ImagingModality
+  retinal location:
+    range: RetinalLocation
+  retinal layer:
+    range: uriorcurie
+    description: UBERON layer of the retina (e.g. outer nuclear layer).
+  etdrs sector:
+    range: EtdrsSectorEnum
+
+classes:
+  CellState:
+    is_a: cell
+    description: >-
+      A dataset-specific cell population (an atlas label) that is a state or subtype of a Cell Ontology class.
+      It keeps its dataset, species and disease context and is linked to its CL class by subclass_of.
+    id_prefixes: [visionkb]
+    slots: [parent cell type, in dataset, summary level, group label, mapping predicate, mapping confidence]
+    slot_usage:
+      in dataset: {required: true}
+
+  BindRecord:
+    description: What AiScientist binds for an atlas (path, name, role); HPC-side metadata.
+    slots: [bind path, bind name, bind role]
+    slot_usage:
+      bind path: {required: true}
+      bind name: {required: true}
+
+  VisionKBDataset:
+    is_a: dataset
+    description: A dataset-registry record (contracts §4), also a Dataset node in the graph.
+    id_prefixes: [visionkb]
+    slots: [version, atlas version, species, tissue, assay, disease context, stage, n cells, n donors, n samples, levels,
+      cell types, format, h5ad path, soma uri, checksum, access level, license, citation, kg release, bind]
+    slot_usage:
+      species: {required: true}
+      tissue: {required: true}
+      assay: {required: true}
+      access level: {required: true}
+
+  ExpressionStudyResult:
+    is_a: study result
+    description: Per dataset x group expression statistics supporting one expressed_in edge (contracts §5).
+    id_prefixes: [visionkb]
+    slots: [edge id, dataset id, atlas version, summary level, group label, region label, n cells, n donors,
+      pct expressing, mean log1p cp10k, pseudobulk cp10k, n donors expressing, expression method, supporting data set]
+    slot_usage:
+      edge id: {required: true}
+      dataset id: {required: true}
+
+  LiteratureStudyResult:
+    is_a: study result
+    description: A curated sentence from a publication supporting one gene-condition edge, with its review grade.
+    id_prefixes: [visionkb]
+    slots: [edge id, pmid, supporting text, grade, review note]
+    slot_usage:
+      edge id: {required: true}
+      pmid: {required: true, pattern: "^PMID:[0-9]+$"}
+      supporting text:
+        pattern: "^(.|\\n){0,300}$"
+        description: At most 300 characters.
+
+  GeneExpressedInCellAssociation:
+    is_a: gene to expression site association
+    description: >-
+      gene expressed_in cell (CL class or CellState) in an anatomical and species context; one edge per
+      (gene, cell type, tissue, species) with summary properties; details in ExpressionStudyResult nodes.
+    slots: [anatomical context qualifier, species context qualifier, has study results, max pct expressing,
+      max mean log1p cp10k, n datasets, curation status, visibility, kg release]
+    slot_usage:
+      object: {range: cell}
+      predicate: {equals_string: "biolink:expressed_in"}
+
+  CuratedGeneToConditionAssociation:
+    is_a: gene to disease association
+    description: Gene to disease assertion from a curated literature review, with grade and status (gene to phenotype assertions use biolink GeneToPhenotypicFeatureAssociation with the same slots).
+    slots: [grade, curation status, visibility, kg release, has study results]
+
+  ImagingModality:
+    is_a: procedure
+    description: Stub. An ophthalmic imaging modality (OCT, fundus photography, FA/ICGA, OCTA, ...).
+    id_prefixes: [visionkb, NCIT, OBI]
+
+  RetinalLocation:
+    is_a: anatomical entity
+    description: Stub. A binned retinal location (layer and/or ETDRS sector), analogous to a spatial coordinate system.
+    id_prefixes: [visionkb, UBERON]
+    slots: [retinal layer, etdrs sector]
+
+  ImageDerivedFeature:
+    is_a: clinical measurement
+    description: Stub. A quantity measured on an image (layer thickness, lesion area, vessel density).
+    id_prefixes: [visionkb, LOINC]
+    slots: [imaging modality, retinal location]
+
+enums:
+  SummaryLevelEnum:
+    permissible_values:
+      majorclass:
+      celltype:
+      region_majorclass:
+  AccessLevelEnum:
+    permissible_values:
+      public:
+      lab:
+      restricted:
+  BindRoleEnum:
+    permissible_values:
+      reference:
+      query:
+  CurationStatusEnum:
+    permissible_values:
+      curated:
+      proposed:
+      rejected:
+  VisibilityEnum:
+    permissible_values:
+      public:
+      lab:
+      owner:
+  RetigeneGradeEnum:
+    permissible_values:
+      A:
+        description: Explicit statement that heterozygous loss of function causes the ocular disease (haploinsufficiency).
+      B:
+        description: Same claim, hedged or conflicting in the source text.
+      N:
+        description: Not supported.
+  EtdrsSectorEnum:
+    permissible_values:
+      central:
+      inner_superior:
+      inner_nasal:
+      inner_inferior:
+      inner_temporal:
+      outer_superior:
+      outer_nasal:
+      outer_inferior:
+      outer_temporal:

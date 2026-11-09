@@ -1,0 +1,258 @@
+# curie_map:
+#   CL: http://purl.obolibrary.org/obo/CL_
+#   skos: http://www.w3.org/2004/02/skos/core#
+#   semapv: https://w3id.org/semapv/vocab/
+#   visionkb: https://purl.visionkb.org/id/
+# mapping_set_id: https://purl.visionkb.org/crosswalk/heca-celltypes/v0.1
+# license: https://creativecommons.org/licenses/by/4.0/
+# mapping_date: 2026-11-09
+# comment: HECA atlas labels (majorclass and celltype levels) to Cell Ontology; labels without a row are CellStates
+subject_id	subject_label	subject_source	annotation_level	predicate_id	object_id	object_label	mapping_justification	confidence	author_id	review_status	comment
+visionkb:cs-hrca-scrna-ac	AC	visionkb:ds-hrca-scrna	majorclass	skos:exactMatch	CL:0000561	amacrine cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-scrna-astrocyte	Astrocyte	visionkb:ds-hrca-scrna	majorclass	skos:exactMatch	CL:4033015	retinal astrocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-scrna-bc	BC	visionkb:ds-hrca-scrna	majorclass	skos:exactMatch	CL:0000748	retinal bipolar neuron	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-scrna-cone	Cone	visionkb:ds-hrca-scrna	majorclass	skos:exactMatch	CL:0000573	retinal cone cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-scrna-hc	HC	visionkb:ds-hrca-scrna	majorclass	skos:exactMatch	CL:0000745	retina horizontal cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-scrna-mg	MG	visionkb:ds-hrca-scrna	majorclass	skos:exactMatch	CL:0000636	Mueller cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-scrna-microglia	Microglia	visionkb:ds-hrca-scrna	majorclass	skos:exactMatch	CL:0000129	microglial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-scrna-rgc	RGC	visionkb:ds-hrca-scrna	majorclass	skos:exactMatch	CL:0000740	retinal ganglion cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-scrna-rpe	RPE	visionkb:ds-hrca-scrna	majorclass	skos:exactMatch	CL:0002586	retinal pigment epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-scrna-rod	Rod	visionkb:ds-hrca-scrna	majorclass	skos:exactMatch	CL:0000604	retinal rod cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-ac	AC	visionkb:ds-hrca-snrna	majorclass	skos:exactMatch	CL:0000561	amacrine cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-astrocyte	Astrocyte	visionkb:ds-hrca-snrna	majorclass	skos:exactMatch	CL:4033015	retinal astrocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-bc	BC	visionkb:ds-hrca-snrna	majorclass	skos:exactMatch	CL:0000748	retinal bipolar neuron	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-cone	Cone	visionkb:ds-hrca-snrna	majorclass	skos:exactMatch	CL:0000573	retinal cone cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-hc	HC	visionkb:ds-hrca-snrna	majorclass	skos:exactMatch	CL:0000745	retina horizontal cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-mg	MG	visionkb:ds-hrca-snrna	majorclass	skos:exactMatch	CL:0000636	Mueller cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-microglia	Microglia	visionkb:ds-hrca-snrna	majorclass	skos:exactMatch	CL:0000129	microglial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-rgc	RGC	visionkb:ds-hrca-snrna	majorclass	skos:exactMatch	CL:0000740	retinal ganglion cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-rpe	RPE	visionkb:ds-hrca-snrna	majorclass	skos:exactMatch	CL:0002586	retinal pigment epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-rod	Rod	visionkb:ds-hrca-snrna	majorclass	skos:exactMatch	CL:0000604	retinal rod cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-astrocyte	Astrocyte	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033015	retinal astrocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-bb	BB	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033019	ON-blue cone bipolar cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	BB = blue-cone bipolar
+visionkb:cs-hrca-snrna-db1	DB1	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033027	diffuse bipolar 1 cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-db2	DB2	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033028	diffuse bipolar 2 cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-db3a	DB3a	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033029	diffuse bipolar 3a cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-db3b	DB3b	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033030	diffuse bipolar 3b cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-db4a	DB4a	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033095	diffuse bipolar 4a cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-db4b	DB4b	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033096	diffuse bipolar 4b cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-db5	DB5	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033085	diffuse bipolar 5 cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-db6	DB6	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033032	diffuse bipolar 6 cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-fmb	FMB	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033033	flat midget bipolar cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-gb	GB	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033035	giant bipolar cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-h1	H1	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:0004217	H1 horizontal cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-h2	H2	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:0004218	H2 horizontal cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-imb	IMB	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033034	invaginating midget bipolar cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-mg	MG	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:0000636	Mueller cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-mg-off	MG_OFF	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033047	OFF midget ganglion cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	MG here is midget ganglion (RGC), not Mueller glia
+visionkb:cs-hrca-snrna-mg-on	MG_ON	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033046	ON midget ganglion cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	MG here is midget ganglion (RGC), not Mueller glia
+visionkb:cs-hrca-snrna-microglia	Microglia	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:0000129	microglial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-pg-off	PG_OFF	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033051	OFF parasol ganglion cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-pg-on	PG_ON	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:4033052	ON parasol ganglion cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-rb	RB	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:0000751	rod bipolar cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-rpe	RPE	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:0002586	retinal pigment epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-rod	Rod	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:0000604	retinal rod cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-s-cone	S_Cone	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:0003050	S cone cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-hrca-snrna-iprgc	ipRGC	visionkb:ds-hrca-snrna	celltype	skos:exactMatch	CL:0020014	intrinsically photosensitive retinal ganglion cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-iris-scrna-anterior-pigmented-epithelial	Anterior Pigmented Epithelial	visionkb:ds-iris-scrna	majorclass	skos:broadMatch	CL:0002565	iris pigment epithelial cell	semapv:ManualMappingCuration	0.6	visionkb:curators	proposed	anterior layer is the dilator myoepithelium; candidate CL:1000445
+visionkb:cs-iris-scrna-fibroblast	Fibroblast	visionkb:ds-iris-scrna	majorclass	skos:exactMatch	CL:0000057	fibroblast	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-iris-scrna-lymphocyte	Lymphocyte	visionkb:ds-iris-scrna	majorclass	skos:exactMatch	CL:0000542	lymphocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-iris-scrna-melanocyte	Melanocyte	visionkb:ds-iris-scrna	majorclass	skos:exactMatch	CL:0000148	melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-iris-scrna-monocyte	Monocyte	visionkb:ds-iris-scrna	majorclass	skos:exactMatch	CL:0000576	monocyte	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-iris-scrna-posterior-pigmented-epithelial	Posterior Pigmented Epithelial	visionkb:ds-iris-scrna	majorclass	skos:closeMatch	CL:0002565	iris pigment epithelial cell	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	
+visionkb:cs-iris-scrna-putative-stem-cell	Putative Stem Cell	visionkb:ds-iris-scrna	majorclass	skos:broadMatch	CL:0000034	stem cell	semapv:ManualMappingCuration	0.4	visionkb:curators	proposed	putative population; needs expert review
+visionkb:cs-iris-scrna-schwann	Schwann	visionkb:ds-iris-scrna	majorclass	skos:exactMatch	CL:0002573	Schwann cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-iris-scrna-smooth-muscle	Smooth Muscle	visionkb:ds-iris-scrna	majorclass	skos:exactMatch	CL:0000192	smooth muscle cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-iris-scrna-sphincter-muscle	Sphincter Muscle	visionkb:ds-iris-scrna	majorclass	skos:exactMatch	CL:0002243	smooth muscle cell of sphincter of pupil	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-iris-scrna-vascular-endothelial	Vascular Endothelial	visionkb:ds-iris-scrna	majorclass	skos:exactMatch	CL:0000071	blood vessel endothelial cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-iris-snrna-anterior-pigmented-epithelial	Anterior Pigmented Epithelial	visionkb:ds-iris-snrna	majorclass	skos:broadMatch	CL:0002565	iris pigment epithelial cell	semapv:ManualMappingCuration	0.6	visionkb:curators	proposed	anterior layer is the dilator myoepithelium; candidate CL:1000445
+visionkb:cs-iris-snrna-fibroblast	Fibroblast	visionkb:ds-iris-snrna	majorclass	skos:exactMatch	CL:0000057	fibroblast	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-iris-snrna-lymphocyte	Lymphocyte	visionkb:ds-iris-snrna	majorclass	skos:exactMatch	CL:0000542	lymphocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-iris-snrna-macrophage	Macrophage	visionkb:ds-iris-snrna	majorclass	skos:exactMatch	CL:0000235	macrophage	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-iris-snrna-melanocyte	Melanocyte	visionkb:ds-iris-snrna	majorclass	skos:exactMatch	CL:0000148	melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-iris-snrna-posterior-pigmented-epithelial	Posterior Pigmented Epithelial	visionkb:ds-iris-snrna	majorclass	skos:closeMatch	CL:0002565	iris pigment epithelial cell	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	
+visionkb:cs-iris-snrna-schwann	Schwann	visionkb:ds-iris-snrna	majorclass	skos:exactMatch	CL:0002573	Schwann cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-iris-snrna-sphincter-muscle	Sphincter Muscle	visionkb:ds-iris-snrna	majorclass	skos:exactMatch	CL:0002243	smooth muscle cell of sphincter of pupil	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-iris-snrna-vascular-endothelial	Vascular Endothelial	visionkb:ds-iris-snrna	majorclass	skos:exactMatch	CL:0000071	blood vessel endothelial cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-lens-scrna-anterior-epi	Anterior_Epi	visionkb:ds-lens-scrna	majorclass	skos:exactMatch	CL:0002223	anterior lens cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-lens-scrna-early-fiber	Early_Fiber	visionkb:ds-lens-scrna	majorclass	skos:broadMatch	CL:0011004	lens fiber cell	semapv:ManualMappingCuration	0.7	visionkb:curators	proposed	newly differentiating fibers
+visionkb:cs-lens-scrna-equatorial-epi	Equatorial_Epi	visionkb:ds-lens-scrna	majorclass	skos:broadMatch	CL:0002224	lens epithelial cell	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	equatorial (germinative) lens epithelium
+visionkb:cs-lens-scrna-fiber	Fiber	visionkb:ds-lens-scrna	majorclass	skos:exactMatch	CL:0011004	lens fiber cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-lens-scrna-immune-cell	Immune_Cell	visionkb:ds-lens-scrna	majorclass	skos:exactMatch	CL:0000738	leukocyte	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	mixed immune population
+visionkb:cs-lens-scrna-transition	Transition	visionkb:ds-lens-scrna	majorclass	skos:closeMatch	CL:0002224	lens epithelial cell	semapv:ManualMappingCuration	0.4	visionkb:curators	proposed	epithelial-to-fiber transition zone; no CL class; term-request candidate
+visionkb:cs-lens-snrna-anterior-epi	Anterior_Epi	visionkb:ds-lens-snrna	majorclass	skos:exactMatch	CL:0002223	anterior lens cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-lens-snrna-early-fiber	Early_Fiber	visionkb:ds-lens-snrna	majorclass	skos:broadMatch	CL:0011004	lens fiber cell	semapv:ManualMappingCuration	0.7	visionkb:curators	proposed	newly differentiating fibers
+visionkb:cs-lens-snrna-equatorial-epi	Equatorial_Epi	visionkb:ds-lens-snrna	majorclass	skos:broadMatch	CL:0002224	lens epithelial cell	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	equatorial (germinative) lens epithelium
+visionkb:cs-lens-snrna-fiber	Fiber	visionkb:ds-lens-snrna	majorclass	skos:exactMatch	CL:0011004	lens fiber cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-lens-snrna-immune-cell	Immune_Cell	visionkb:ds-lens-snrna	majorclass	skos:exactMatch	CL:0000738	leukocyte	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	mixed immune population
+visionkb:cs-lens-snrna-transition	Transition	visionkb:ds-lens-snrna	majorclass	skos:closeMatch	CL:0002224	lens epithelial cell	semapv:ManualMappingCuration	0.4	visionkb:curators	proposed	epithelial-to-fiber transition zone; no CL class; term-request candidate
+visionkb:cs-ocularsurface-scrna-corneal-endothelium	Corneal Endothelium	visionkb:ds-ocularsurface-scrna	majorclass	skos:exactMatch	CL:0000132	corneal endothelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-endothelium	Endothelium	visionkb:ds-ocularsurface-scrna	majorclass	skos:exactMatch	CL:0000115	endothelial cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-epithelium	Epithelium	visionkb:ds-ocularsurface-scrna	majorclass	skos:exactMatch	CL:0000066	epithelial cell	semapv:ManualMappingCuration	0.7	visionkb:curators	proposed	heterogeneous (corneal, limbal, conjunctival); resolve at subclass level
+visionkb:cs-ocularsurface-scrna-fibroblasts	Fibroblasts	visionkb:ds-ocularsurface-scrna	majorclass	skos:exactMatch	CL:0000057	fibroblast	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-immune-cells	Immune Cells	visionkb:ds-ocularsurface-scrna	majorclass	skos:exactMatch	CL:0000738	leukocyte	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	mixed immune population
+visionkb:cs-ocularsurface-scrna-melanocytes	Melanocytes	visionkb:ds-ocularsurface-scrna	majorclass	skos:exactMatch	CL:0000148	melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-mural-cells	Mural Cells	visionkb:ds-ocularsurface-scrna	majorclass	skos:exactMatch	CL:0008034	mural cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-schwann-cells	Schwann Cells	visionkb:ds-ocularsurface-scrna	majorclass	skos:exactMatch	CL:0002573	Schwann cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-artery	Artery	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:1000413	endothelial cell of artery	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	endothelial subcluster labelled by vessel
+visionkb:cs-ocularsurface-scrna-b-cells	B Cells	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000236	B cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-capillary	Capillary	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0002144	capillary endothelial cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	endothelial subcluster labelled by vessel
+visionkb:cs-ocularsurface-scrna-corneal-endo	Corneal_Endo	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000132	corneal endothelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-lymphatic-endo	Lymphatic_Endo	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0002138	endothelial cell of lymphatic vessel	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-mast-cells	Mast Cells	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000097	mast cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-melanocytes	Melanocytes	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000148	melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-monocytes	Monocytes	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000576	monocyte	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-neutrophils	Neutrophils	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000775	neutrophil	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-pericytes	Pericytes	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000669	pericyte	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-plasma-cells	Plasma Cells	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000786	plasma cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-schwann-m	Schwann_M	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000218	myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-schwann-n	Schwann_N	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0002376	non-myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-t-cells-cd4	T Cells_CD4	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000624	CD4-positive, alpha-beta T cell	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-t-cells-cd8	T Cells_CD8	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000625	CD8-positive, alpha-beta T cell	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-scrna-vsmc	VSMC	visionkb:ds-ocularsurface-scrna	celltype	skos:exactMatch	CL:0000359	vascular associated smooth muscle cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-corneal-endothelium	Corneal Endothelium	visionkb:ds-ocularsurface-snrna	majorclass	skos:exactMatch	CL:0000132	corneal endothelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-endothelium	Endothelium	visionkb:ds-ocularsurface-snrna	majorclass	skos:exactMatch	CL:0000115	endothelial cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-epithelium	Epithelium	visionkb:ds-ocularsurface-snrna	majorclass	skos:exactMatch	CL:0000066	epithelial cell	semapv:ManualMappingCuration	0.7	visionkb:curators	proposed	heterogeneous (corneal, limbal, conjunctival); resolve at subclass level
+visionkb:cs-ocularsurface-snrna-fibroblasts	Fibroblasts	visionkb:ds-ocularsurface-snrna	majorclass	skos:exactMatch	CL:0000057	fibroblast	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-goblet	Goblet	visionkb:ds-ocularsurface-snrna	majorclass	skos:exactMatch	CL:2000084	conjunctiva goblet cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-immune-cells	Immune Cells	visionkb:ds-ocularsurface-snrna	majorclass	skos:exactMatch	CL:0000738	leukocyte	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	mixed immune population
+visionkb:cs-ocularsurface-snrna-melanocytes	Melanocytes	visionkb:ds-ocularsurface-snrna	majorclass	skos:exactMatch	CL:0000148	melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-pericytes	Pericytes	visionkb:ds-ocularsurface-snrna	majorclass	skos:exactMatch	CL:0000669	pericyte	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-schwann-cells	Schwann Cells	visionkb:ds-ocularsurface-snrna	majorclass	skos:exactMatch	CL:0002573	Schwann cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-smooth-muscle-cells	Smooth Muscle Cells	visionkb:ds-ocularsurface-snrna	majorclass	skos:exactMatch	CL:0000192	smooth muscle cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-conj-epi	Conj-Epi	visionkb:ds-ocularsurface-snrna	celltype	skos:exactMatch	CL:1000432	conjunctival epithelial cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-corneal-stromal-keratocytes	Corneal Stromal Keratocytes	visionkb:ds-ocularsurface-snrna	celltype	skos:exactMatch	CL:0002363	keratocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-goblet	Goblet	visionkb:ds-ocularsurface-snrna	celltype	skos:exactMatch	CL:2000084	conjunctiva goblet cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-lymphatic-endothelium	Lymphatic Endothelium	visionkb:ds-ocularsurface-snrna	celltype	skos:exactMatch	CL:0002138	endothelial cell of lymphatic vessel	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-pericytes	Pericytes	visionkb:ds-ocularsurface-snrna	celltype	skos:exactMatch	CL:0000669	pericyte	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-schlemm-endothelium	Schlemm Endothelium	visionkb:ds-ocularsurface-snrna	celltype	skos:exactMatch	CL:4033097	Schlemm's canal endothelial cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-schwann-m	Schwann_M	visionkb:ds-ocularsurface-snrna	celltype	skos:exactMatch	CL:0000218	myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-schwann-n	Schwann_N	visionkb:ds-ocularsurface-snrna	celltype	skos:exactMatch	CL:0002376	non-myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-smooth-muscle-cells	Smooth Muscle Cells	visionkb:ds-ocularsurface-snrna	celltype	skos:exactMatch	CL:0000192	smooth muscle cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ocularsurface-snrna-vascular-endothelium	Vascular Endothelium	visionkb:ds-ocularsurface-snrna	celltype	skos:exactMatch	CL:0000071	blood vessel endothelial cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-astrocyte	Astrocyte	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0000127	astrocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	optic-nerve astrocytes; no tissue-specific CL class
+visionkb:cs-ononh-snrna-endothelial-cell	Endothelial_cell	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0000115	endothelial cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-fibroblast	Fibroblast	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0000057	fibroblast	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-immune	Immune	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0000738	leukocyte	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	mixed immune population
+visionkb:cs-ononh-snrna-mg	MG	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0000636	Mueller cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-macrophage	Macrophage	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0000235	macrophage	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-melanocyte	Melanocyte	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0000148	melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-microglia	Microglia	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0000129	microglial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-mural-cell	Mural_cell	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0008034	mural cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-oligodendrocyte	Oligodendrocyte	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0000128	oligodendrocyte	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-oligodendrocyte-precursor-cell	Oligodendrocyte_precursor_cell	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0002453	oligodendrocyte precursor cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-rpe	RPE	visionkb:ds-ononh-snrna	majorclass	skos:exactMatch	CL:0002586	retinal pigment epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-astro-retina	Astro_retina	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:4033015	retinal astrocyte	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-b-cell	B_cell	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0000236	B cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-capillary	Capillary	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0002144	capillary endothelial cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	endothelial subcluster labelled by vessel
+visionkb:cs-ononh-snrna-capillary-fenestrated	Capillary_fenestrated	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0000666	fenestrated endothelial cell	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-dendritic-cell	Dendritic_cell	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0000451	dendritic cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-mg	MG	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0000636	Mueller cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-macrophage	Macrophage	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0000235	macrophage	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-mast-cell	Mast_cell	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0000097	mast cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-melanocyte	Melanocyte	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0000148	melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-microglia	Microglia	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0000129	microglial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-nk-cell	NK_cell	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0000623	natural killer cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-opc	OPC	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0002453	oligodendrocyte precursor cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-ononh-snrna-t-cell	T_cell	visionkb:ds-ononh-snrna	celltype	skos:exactMatch	CL:0000084	T cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-b-cells	B_cells	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0000236	B cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-dendritic-cells	Dendritic_cells	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0000451	dendritic cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-fibroblasts	Fibroblasts	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0000057	fibroblast	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-macrophages	Macrophages	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0000235	macrophage	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-mast-cells	Mast_cells	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0000097	mast cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-melanocytes	Melanocytes	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:4030000	choroidal melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-monocytes	Monocytes	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0000576	monocyte	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-mural-cells	Mural_cells	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0008034	mural cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-nk-cells	NK_cells	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0000623	natural killer cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-plasma-cells	Plasma_cells	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0000786	plasma cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-rpe	RPE	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0002586	retinal pigment epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-rpe-fetal	RPE_Fetal	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0002586	retinal pigment epithelial cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	fetal stage belongs on the donor, not in the cell-type term
+visionkb:cs-rpechoroid-scrna-schwann-cells	Schwann_cells	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0002573	Schwann cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-t-cells	T_cells	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0000084	T cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-vascular-endothelium	Vascular_endothelium	visionkb:ds-rpechoroid-scrna	majorclass	skos:exactMatch	CL:0000071	blood vessel endothelial cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-b-cells	B_cells	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:0000236	B cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-dendritic-cells	Dendritic_cells	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:0000451	dendritic cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-fenestrated-capillary	Fenestrated_capillary	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:0000666	fenestrated endothelial cell	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-mast-cells	Mast_cells	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:0000097	mast cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-melanocytes	Melanocytes	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:4030000	choroidal melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-pericytes	Pericytes	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:0000669	pericyte	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-plasma-cells	Plasma_cells	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:0000786	plasma cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-rpe	RPE	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:0002586	retinal pigment epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-schwann-myelinating	Schwann_myelinating	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:0000218	myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-schwann-nonmyelinating	Schwann_nonmyelinating	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:0002376	non-myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-smooth-muscle-cells	Smooth_muscle_cells	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:0000192	smooth muscle cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-t-cells	T_cells	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:0000084	T cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-scrna-venules	Venules	visionkb:ds-rpechoroid-scrna	celltype	skos:exactMatch	CL:1000414	endothelial cell of venule	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-b-cells	B cells	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000236	B cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-dc	DC	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000451	dendritic cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-endothelial-cells	Endothelial cells	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000115	endothelial cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-fibroblasts	Fibroblasts	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000057	fibroblast	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-ilc3	ILC3	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0001071	group 3 innate lymphoid cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-macrophages	Macrophages	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000235	macrophage	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-mast-cells	Mast cells	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000097	mast cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-megakaryocytes	Megakaryocytes	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000556	megakaryocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-melanocytes	Melanocytes	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:4030000	choroidal melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-monocytes	Monocytes	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000576	monocyte	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-mural-cells	Mural cells	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0008034	mural cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-nk-cells	NK cells	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000623	natural killer cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-plasma-cells	Plasma cells	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000786	plasma cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-rpe-cells	RPE cells	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0002586	retinal pigment epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-schwann-cells	Schwann cells	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0002573	Schwann cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-t-cells	T cells	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000084	T cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-pdc	pDC	visionkb:ds-rpechoroid-snrna	majorclass	skos:exactMatch	CL:0000784	plasmacytoid dendritic cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-arterial	Arterial	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:1000413	endothelial cell of artery	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	endothelial subcluster labelled by vessel
+visionkb:cs-rpechoroid-snrna-b-cells	B cells	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000236	B cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-classic-monocytes	Classic Monocytes	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000860	classical monocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-dc	DC	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000451	dendritic cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-fenestrated-capillary	Fenestrated capillary	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000666	fenestrated endothelial cell	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-helper-t-cells	Helper T cells	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000912	helper T cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-ilc	ILC	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0001065	innate lymphoid cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-macrophages	Macrophages	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000235	macrophage	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-mast-cells	Mast cells	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000097	mast cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-megakaryocytes	Megakaryocytes	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000556	megakaryocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-non-classical-monocytes	Non-classical Monocytes	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000875	non-classical monocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-plasma-cells	Plasma cells	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000786	plasma cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-regulatory-t-cells	Regulatory T cells	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000815	regulatory T cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-schwann-cells-myelinating	Schwann cells myelinating	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000218	myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-schwann-cells-nonmyelinating	Schwann cells nonmyelinating	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0002376	non-myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-vascular-smooth-muscle-cells	Vascular smooth muscle cells	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000359	vascular associated smooth muscle cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-vein	Vein	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0002543	vein endothelial cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-venule	Venule	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:1000414	endothelial cell of venule	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-rpechoroid-snrna-pdc	pDC	visionkb:ds-rpechoroid-snrna	celltype	skos:exactMatch	CL:0000784	plasmacytoid dendritic cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-cb-npce	CB_NPCE	visionkb:ds-tmcb-scrna	majorclass	skos:exactMatch	CL:0002304	non-pigmented ciliary epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-cb-pce	CB_PCE	visionkb:ds-tmcb-scrna	majorclass	skos:exactMatch	CL:0002303	pigmented ciliary epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-ciliary-muscle	Ciliary_Muscle	visionkb:ds-tmcb-scrna	majorclass	skos:exactMatch	CL:1000443	ciliary muscle cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-endothelium	Endothelium	visionkb:ds-tmcb-scrna	majorclass	skos:exactMatch	CL:0000115	endothelial cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-fibroblast	Fibroblast	visionkb:ds-tmcb-scrna	majorclass	skos:exactMatch	CL:0000057	fibroblast	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-immune-cell	Immune Cell	visionkb:ds-tmcb-scrna	majorclass	skos:exactMatch	CL:0000738	leukocyte	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	mixed immune population
+visionkb:cs-tmcb-scrna-melanocyte	Melanocyte	visionkb:ds-tmcb-scrna	majorclass	skos:exactMatch	CL:0000148	melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-pericyte	Pericyte	visionkb:ds-tmcb-scrna	majorclass	skos:exactMatch	CL:0000669	pericyte	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-schwann-cell	Schwann Cell	visionkb:ds-tmcb-scrna	majorclass	skos:exactMatch	CL:0002573	Schwann cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-b-cell	B Cell	visionkb:ds-tmcb-scrna	celltype	skos:exactMatch	CL:0000236	B cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-cb-pce	CB_PCE	visionkb:ds-tmcb-scrna	celltype	skos:exactMatch	CL:0002303	pigmented ciliary epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-ciliary-muscle	Ciliary_Muscle	visionkb:ds-tmcb-scrna	celltype	skos:exactMatch	CL:1000443	ciliary muscle cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-macrophage	Macrophage	visionkb:ds-tmcb-scrna	celltype	skos:exactMatch	CL:0000235	macrophage	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-mast-cell	Mast Cell	visionkb:ds-tmcb-scrna	celltype	skos:exactMatch	CL:0000097	mast cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-schlemm-endothelium	Schlemm_Endothelium	visionkb:ds-tmcb-scrna	celltype	skos:exactMatch	CL:4033097	Schlemm's canal endothelial cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-schwann-my	Schwann-my	visionkb:ds-tmcb-scrna	celltype	skos:exactMatch	CL:0000218	myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-schwann-nmy	Schwann-nmy	visionkb:ds-tmcb-scrna	celltype	skos:exactMatch	CL:0002376	non-myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-scrna-tm-fibro-jct	TM_Fibro_JCT	visionkb:ds-tmcb-scrna	celltype	skos:broadMatch	CL:7770002	juxtacanalicular tissue cell	semapv:ManualMappingCuration	0.6	visionkb:curators	proposed	JCT fibroblast cluster
+visionkb:cs-tmcb-scrna-vascular-endothelium	Vascular_Endothelium	visionkb:ds-tmcb-scrna	celltype	skos:exactMatch	CL:0000071	blood vessel endothelial cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-cb-npce	CB_NPCE	visionkb:ds-tmcb-snrna	majorclass	skos:exactMatch	CL:0002304	non-pigmented ciliary epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-cb-pce	CB_PCE	visionkb:ds-tmcb-snrna	majorclass	skos:exactMatch	CL:0002303	pigmented ciliary epithelial cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-ciliary-muscle	Ciliary_Muscle	visionkb:ds-tmcb-snrna	majorclass	skos:exactMatch	CL:1000443	ciliary muscle cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-endothelium	Endothelium	visionkb:ds-tmcb-snrna	majorclass	skos:exactMatch	CL:0000115	endothelial cell	semapv:ManualMappingCuration	0.85	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-fibroblast	Fibroblast	visionkb:ds-tmcb-snrna	majorclass	skos:exactMatch	CL:0000057	fibroblast	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-immune-cell	Immune_Cell	visionkb:ds-tmcb-snrna	majorclass	skos:exactMatch	CL:0000738	leukocyte	semapv:ManualMappingCuration	0.8	visionkb:curators	proposed	mixed immune population
+visionkb:cs-tmcb-snrna-melanocyte	Melanocyte	visionkb:ds-tmcb-snrna	majorclass	skos:exactMatch	CL:0000148	melanocyte	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-pericyte	Pericyte	visionkb:ds-tmcb-snrna	majorclass	skos:exactMatch	CL:0000669	pericyte	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-schwann-cell	Schwann_Cell	visionkb:ds-tmcb-snrna	majorclass	skos:exactMatch	CL:0002573	Schwann cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-b-cell	B Cell	visionkb:ds-tmcb-snrna	celltype	skos:exactMatch	CL:0000236	B cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-ciliary-muscle	Ciliary_Muscle	visionkb:ds-tmcb-snrna	celltype	skos:exactMatch	CL:1000443	ciliary muscle cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-jct	JCT	visionkb:ds-tmcb-snrna	celltype	skos:broadMatch	CL:7770002	juxtacanalicular tissue cell	semapv:ManualMappingCuration	0.6	visionkb:curators	proposed	JCT fibroblast cluster
+visionkb:cs-tmcb-snrna-macrophage	Macrophage	visionkb:ds-tmcb-snrna	celltype	skos:exactMatch	CL:0000235	macrophage	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-mast-cell	Mast Cell	visionkb:ds-tmcb-snrna	celltype	skos:exactMatch	CL:0000097	mast cell	semapv:ManualMappingCuration	0.95	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-schlemm-endothelium	Schlemm_Endothelium	visionkb:ds-tmcb-snrna	celltype	skos:exactMatch	CL:4033097	Schlemm's canal endothelial cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-schwann-my	Schwann-my	visionkb:ds-tmcb-snrna	celltype	skos:exactMatch	CL:0000218	myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-schwann-nmy	Schwann-nmy	visionkb:ds-tmcb-snrna	celltype	skos:exactMatch	CL:0002376	non-myelinating Schwann cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
+visionkb:cs-tmcb-snrna-vascular-endothelium	Vascular_Endothelium	visionkb:ds-tmcb-snrna	celltype	skos:exactMatch	CL:0000071	blood vessel endothelial cell	semapv:ManualMappingCuration	0.9	visionkb:curators	proposed	
