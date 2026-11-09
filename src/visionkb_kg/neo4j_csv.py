@@ -117,9 +117,9 @@ def write_import(nodes_path: Path, edges_path: Path, outdir: Path, tk) -> dict:
         keys = sorted({k for _, n in recs for k in n if k not in ("id",)})
         types = {k: _type(n.get(k) for _, n in recs) for k in keys}
         types["category"] = "string[]"
-        header = ["id:ID", ":LABEL", "id"] + [f"{k}:{types[k]}" for k in keys]
+        header = ["id:ID", ":LABEL"] + [f"{k}:{types[k]}" for k in keys]
         rows = (
-            [n["id"], ARRAY_DELIM.join(labs), n["id"]] + [_cell(n.get(k), types[k]) for k in keys]
+            [n["id"], ARRAY_DELIM.join(labs)] + [_cell(n.get(k), types[k]) for k in keys]
             for labs, n in sorted(recs, key=lambda x: x[1]["id"])
         )
         fn = f"nodes_{lab}.csv"

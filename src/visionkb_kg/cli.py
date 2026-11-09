@@ -372,6 +372,61 @@ def known_issues_step(stage: Path, regs: list[dict], rep: dict) -> list[dict]:
     ]
 
 
+def post_build(release: str, *, neo4j: bool = False) -> dict:
+    """Post-build step on an unpacked, not yet bundled release; the graph (KGX), summaries and registry are not touched.
+    Rewrites validation/report.md from report.json + known_issues.json (small-group tables, Known issues section),
+    optionally regenerates neo4j-import/ from the release KGX, and refreshes the manifest (counts, file checksums, code)."""
+    from . import known_issues as KI
+    from .biolink import toolkit
+    from .neo4j_csv import write_import
+    from .release import file_list, release_counts
+
+    root = release_dir(release)
+    if (data_root() / "kg" / "bundles" / f"{release}.tar").exists():
+        raise SystemExit(f"{release} is already bundled; remove the bundle first (post-build regenerates it)")
+    m = json.loads((root / "manifest.json").read_text())
+    rep = json.loads((root / "validation" / "report.json").read_text())
+    ki = json.loads((root / "validation" / "known_issues.json").read_text())
+    md = (root / "validation" / "report.md").read_text().split("\n## Known issues\n")[0].rstrip("\n") + "\n"
+    sg = small_groups_md(rep["ingest"]["heca"].get("edge_rule", {}).get("small_groups"))
+    if sg and sg[1] not in md:
+        head, tail = md.split("\n## Ingests\n", 1)
+        md = head.rstrip("\n") + "\n" + "\n".join(sg) + "\n\n## Ingests\n" + tail
+    (root / "validation" / "report.md").write_text(md + KI.markdown(ki))
+    neo_counts = m.get("counts", {}).get("neo4j")
+    if neo4j:
+        tmp = root / "neo4j-import.new"
+        if tmp.exists():
+            shutil.rmtree(tmp)
+        neo = write_import(root / "kgx" / "nodes.jsonl", root / "kgx" / "edges.jsonl", tmp, toolkit())
+        if (root / "neo4j-import").exists():
+            shutil.rmtree(root / "neo4j-import")
+        tmp.rename(root / "neo4j-import")
+        neo_counts = neo["counts"]
+    code = m["code"]["visionkb-kg"]
+    sha = _git(str(Path(__file__).resolve().parents[2]))
+    if sha and sha != code.get("git_sha"):
+        code.setdefault("graph_build_git_sha", code.get("git_sha"))
+        code["git_sha"] = sha
+    steps = m.setdefault("post_build", [])
+    steps.append(
+        {
+            "git_sha": sha,
+            "utc": datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "regenerated": ["validation/report.md"] + (["neo4j-import/"] if neo4j else []),
+            "unchanged": ["kgx/", "summaries/", "registry/", "validation/report.json", "validation/known_issues.json"],
+        }
+    )
+    m["counts"] = {**release_counts(root), "neo4j": neo_counts}
+    m["files"] = file_list(root)
+    wjson(m, root / "manifest.json")
+    return {
+        "code": m["code"],
+        "post_build": steps[-1],
+        "counts": {k: v for k, v in m["counts"].items() if k != "neo4j"},
+    }
+
+
 def refresh_manifest(release: str) -> dict:
     """Recompute manifest counts (contracts v0.7) and the file list of an unpacked, not yet bundled release."""
     from .release import file_list, release_counts
@@ -384,6 +439,35 @@ def refresh_manifest(release: str) -> dict:
     m["files"] = file_list(root)
     wjson(m, root / "manifest.json")
     return m["counts"]
+
+
+def small_groups_md(sg: dict | None) -> list[str]:
+    """Markdown lines of the D18 small-group report (groups below the cell threshold)."""
+    if not sg:
+        return []
+    L: list[str] = []
+    L += [
+        "",
+        f"### Small groups (< {sg['threshold_n_cells']} cells)",
+        "",
+        f"{len(sg['groups'])} groups below {sg['threshold_n_cells']} cells. Rows removed only by (c) over all groups: "
+        f"{sg['only_c_rows_total']:,}; {sg['only_c_rows_in_groups_with_median_cells_per_donor_lt_10']:,} of them in "
+        f"{sg['groups_affected_by_only_c_with_median_lt_10']} groups with median < 10 cells per donor "
+        f"({sg['groups_with_median_cells_per_donor_lt_10']} groups have median < 10 cells per donor).",
+        "",
+        "| dataset | level | group | cells | donors | cells/donor median (min) | candidates | fail a | fail b | fail c "
+        "| kept | only a | only c | top kept | top removed only by (c) | top removed only by (a) |",
+        "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
+    ]
+    for g in sg["groups"]:
+        L.append(
+            f"| {g['dataset_id'].removeprefix('visionkb:ds-')} | {g['level']} | {g['group_label']} | {g['n_cells']} | "
+            f"{g['n_donors']} | {g['median_cells_per_donor']:g} ({g['min_cells_per_donor']}) | {g['candidate_rows']:,} | "
+            f"{g['fail_a']:,} | {g['fail_b']:,} | {g['fail_c']:,} | {g['kept']:,} | {g['only_a']:,} | {g['only_c']:,} | "
+            f"{', '.join(g['top_kept']) or '-'} | {', '.join(g['top_removed_only_c']) or '-'} | "
+            f"{', '.join(g['top_removed_only_a']) or '-'} |"
+        )
+    return L
 
 
 def report_md(rep: dict) -> str:
@@ -473,6 +557,7 @@ def report_md(rep: dict) -> str:
                 )
                 + f" | celltype groups D8 {v['celltype_groups']['D8']} -> D18 {v['celltype_groups']['D18']}"
             )
+        L += small_groups_md(er.get("small_groups"))
     L += ["", "## Ingests", ""]
     for s, v in rep["ingest"].items():
         brief = {
@@ -508,6 +593,11 @@ def main(argv=None):
     s.add_argument("--no-kgx", action="store_true", help="skip the KGX validator pass")
     s = sub.add_parser("refresh-manifest", help="recompute manifest counts and file checksums before pack")
     s.add_argument("release")
+    s = sub.add_parser(
+        "post-build", help="rewrite report.md, optionally regenerate neo4j-import/, refresh manifest (before pack)"
+    )
+    s.add_argument("release")
+    s.add_argument("--neo4j", action="store_true", help="regenerate neo4j-import/ from the release KGX")
     s = sub.add_parser("pack")
     s.add_argument("release")
     s.add_argument("--out", help="bundle dir (default $VISIONKB_DATA_ROOT/kg/bundles)")
@@ -534,6 +624,9 @@ def main(argv=None):
         sys.exit(0 if res["status"] == "pass" else 1)
     if args.cmd == "refresh-manifest":
         print(json.dumps({k: v for k, v in refresh_manifest(args.release).items() if k != "neo4j"}, indent=2))
+        return
+    if args.cmd == "post-build":
+        print(json.dumps(post_build(args.release, neo4j=args.neo4j), indent=2))
         return
     if args.cmd == "pack":
         from .release import pack

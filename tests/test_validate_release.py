@@ -64,7 +64,11 @@ def test_neo4j_pack_verify(tmp_path, mini_graph):
     res = write_import(n, e, rel / "neo4j-import", toolkit())
     assert res["counts"]["nodes"]["Gene"] == 1 and res["counts"]["relationships"]["supporting_data_set"] == 1
     head = (rel / "neo4j-import" / "nodes_Gene.csv").read_text().splitlines()[0]
-    assert (head.startswith("id:ID,:LABEL,id,") and "synonym" not in head) or "synonym:string[]" in head
+    cols = [c.split(":")[0] if not c.startswith(":") else c for c in head.split(",")]
+    assert head.startswith("id:ID,:LABEL,") and len(cols) == len(set(cols)), (
+        head
+    )  # neo4j-admin rejects duplicate headers
+    assert "synonym" not in head or "synonym:string[]" in head
     gene = (rel / "neo4j-import" / "nodes_Gene.csv").read_text().splitlines()[1]
     assert "Gene;BiologicalEntity;NamedThing" in gene or ";NamedThing" in gene
     cs = (rel / "neo4j-import" / "nodes_CellState.csv").read_text()
@@ -110,3 +114,29 @@ def test_check_relative(tmp_path):
     (tmp_path / "manifest.json").write_text(json.dumps({"sources": [{"path_or_url": "/abs/data/x.txt"}]}))
     (tmp_path / "neo4j-import" / "import.args").write_text("--nodes=Gene=/abs/nodes.csv\n--relationships=../rels.csv\n")
     assert len(check_relative(tmp_path)) == 3
+
+
+def _prop(col: str) -> str:
+    """Property a neo4j-admin header column writes: 'id:ID' -> 'id', 'name:string' -> 'name'; ':LABEL' etc. -> itself."""
+    return col if col.startswith(":") else col.split(":", 1)[0]
+
+
+def test_neo4j_headers_have_unique_property_names(tmp_path, mini_graph):
+    rel = tmp_path / "rel" / "visionkb-test.0"
+    (rel / "kgx").mkdir(parents=True)
+    n, e = _write(rel / "kgx", *mini_graph)
+    write_import(n, e, rel / "neo4j-import", toolkit())
+    files = sorted((rel / "neo4j-import").glob("*.csv"))
+    assert any(f.name.startswith("nodes_") for f in files) and any(f.name.startswith("rels_") for f in files)
+    for f in files:
+        cols = f.read_text().splitlines()[0].split(",")
+        props = [_prop(c) for c in cols]
+        dup = sorted({x for x in props if props.count(x) > 1})
+        assert not dup, f"{f.name}: duplicate header names {dup} in {cols}"
+        if f.name.startswith("nodes_"):
+            assert cols[:2] == ["id:ID", ":LABEL"], cols
+
+
+def test_prop_helper_rejects_id_vs_id_ID():
+    props = [_prop(c) for c in ["id:ID", ":LABEL", "id", "name:string"]]
+    assert props.count("id") == 2

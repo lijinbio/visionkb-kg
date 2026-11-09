@@ -32,6 +32,10 @@ and predicates (bmt on the vendored 4.4.6), domain/range of every category-predi
 links, and the KGX validator (streaming). A self-test checks that the design proposal's wrong id for APLN (`HGNC:16693`; APLN is
 `HGNC:16665`) is flagged.
 
+`visionkb-kg post-build <release> [--neo4j]` (before `pack`) rewrites `validation/report.md` (small-group tables, Known issues)
+from `report.json` / `known_issues.json`, optionally regenerates `neo4j-import/` from the release KGX, and refreshes the manifest
+(counts, file checksums, `code.visionkb-kg.git_sha`, a `post_build` record); KGX, summaries and registry are not touched.
+
 Known issues (report only; nothing is flagged or removed) are computed from the release summaries and written to
 `validation/known_issues.json`, a "Known issues" section of `report.md` and the manifest `known_issues` list. KI-1
 (`src/visionkb_kg/known_issues.py`): per atlas, the top-50 markers of each majorclass are looked up in every cell-type group of
