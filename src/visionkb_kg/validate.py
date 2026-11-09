@@ -194,6 +194,10 @@ def validate_release(nodes_path: Path, edges_path: Path, ts: TermSets, *, run_kg
     if run_kgx:
         log("running KGX validator (streaming)")
         out["kgx"] = kgx_validate(nodes_path, edges_path, tk)
+        for code, info in out["kgx"]["expected"].items():
+            rep.counts[f"kgx:expected:{code}"] += info["count"]
+            rep.level[f"kgx:expected:{code}"] = "warning"
+            rep.examples[f"kgx:expected:{code}"] = info["examples"]
         for lvl, d in out["kgx"]["errors"].items():
             for code, info in d.items():
                 rep.counts[f"kgx:{lvl}:{code}"] += info["count"]
@@ -205,6 +209,13 @@ def validate_release(nodes_path: Path, edges_path: Path, ts: TermSets, *, run_kg
 
 
 def kgx_validate(nodes_path: Path, edges_path: Path, tk) -> dict:
+    """KGX 2.8 validator (streaming) with the vendored Biolink 4.4.6 toolkit.
+
+    Expected findings are reported as warnings, not hidden: the local ``visionkb`` prefix (CellState, Dataset, StudyResult ids;
+    defined in the visionkb schema, not in the Biolink JSON-LD context), visionkb categories (``CellState``), and a KGX streaming
+    artefact where the last node before the edge stream is re-checked with list-valued ``in_taxon`` (each such node is re-read
+    from the file and downgraded only if its ``in_taxon`` is a string there). Everything else stays an error.
+    """
     from kgx.transformer import Transformer
     from kgx.validator import Validator
 
@@ -217,17 +228,37 @@ def kgx_validate(nodes_path: Path, edges_path: Path, tk) -> dict:
         inspector=v,
     )
     errs = v.get_errors()
+    vk = {f"'{c}'" for c in visionkb_classes()}
+    taxon_ids = set()
+    for codes in errs.values():
+        for msgs in codes.values():
+            for m, ids in msgs.items():
+                if "in_taxon" in m and "Single-valued" in m:
+                    taxon_ids |= set(ids if isinstance(ids, list | set) else [ids])
+    taxon_ok = set()
+    if taxon_ids:
+        for n in read_jsonl(nodes_path):
+            if n["id"] in taxon_ids and isinstance(n.get("in_taxon"), str):
+                taxon_ok.add(n["id"])
     summary = {}
+    expected = {}
     for lvl, codes in errs.items():
-        summary[lvl] = {}
         for code, msgs in codes.items():
-            n = sum(len(ids) if isinstance(ids, list | set) else 1 for ids in msgs.values())
-            ex = [
-                {"message": m, "ids": sorted(ids)[:5] if isinstance(ids, list | set) else ids}
-                for m, ids in list(msgs.items())[:5]
-            ]
-            summary[lvl][code] = {"count": n, "examples": ex}
-    return {"errors": summary, "biolink_version": tk.get_model_version()}
+            for m, ids in msgs.items():
+                idl = sorted(set(ids)) if isinstance(ids, list | set) else [ids]
+                if "CURIE prefix 'visionkb'" in m:
+                    bucket, key = expected, f"{code}:local_visionkb_prefix"
+                elif code == "INVALID_CATEGORY" and any(c in m for c in vk):
+                    bucket, key = expected, f"{code}:visionkb_category"
+                elif "in_taxon" in m and idl and set(idl) <= taxon_ok:
+                    bucket, key = expected, f"{code}:kgx_stream_artifact_in_taxon"
+                else:
+                    bucket, key = summary.setdefault(lvl, {}), code
+                rec = bucket.setdefault(key, {"count": 0, "examples": []})
+                rec["count"] += len(idl)
+                if len(rec["examples"]) < 5:
+                    rec["examples"].append({"message": m[:300], "ids": idl[:5]})
+    return {"errors": summary, "expected": expected, "biolink_version": tk.get_model_version()}
 
 
 def apln_self_test(ts: TermSets) -> dict:
