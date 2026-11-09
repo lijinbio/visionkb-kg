@@ -262,7 +262,10 @@ COLS = [
 
 
 def slugify(label: str) -> str:
-    return re.sub(r"[^0-9a-zA-Z]+", "-", str(label)).strip("-").lower()
+    """Same rule as visionkb_atlas.config.slugify ('+' -> pos, trailing '-' -> neg, '*' -> star)."""
+    s = str(label).replace("+", " pos ").replace("*", " star ")
+    s = re.sub(r"(?<=[0-9A-Za-z])-(?=$|[^0-9A-Za-z])", " neg ", s)
+    return re.sub(r"[^0-9a-zA-Z]+", "-", s).strip("-").lower()
 
 
 def ols_check(ids: dict[str, str]) -> dict:
